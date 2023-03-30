@@ -1,4 +1,4 @@
-# Online Exam
+# Knowie
 This is an online school exam project created to PWEB class at Federal Institute of Alagoas.
 
 ## Configuration
