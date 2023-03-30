@@ -1,0 +1,224 @@
+.menu-container {
+    width: 100%;
+    display: flex;
+}
+
+.menu-container .nav {
+    background-color: #f9f9f9;
+    float: left;
+    width: 300px;
+    height: 100vh;
+    border: 1px solid #cfcfcf94;
+    display: grid;
+}
+
+.image-container {
+    text-align: center;
+    width: 100%;
+    padding: 0 20px;
+}
+
+.logo {
+    padding: 15px;
+    background: #fff;
+    border-radius: 100%;
+    width: 70%;
+}
+
+.item-container {
+    width: 100%;
+    top: -20px;
+    padding-top: 15px;
+}
+
+.menu-box-input {
+    padding-bottom: 5px;
+    margin: 0 15px 10px 15px;
+}
+
+.menu-box-input-search {
+    width: 100%;
+}
+
+.input-search {
+    height: 46px;
+    font-size: 17px;
+}
+
+.menu-box {
+    padding: 20px 30px;
+    margin: 0 15px 10px 15px;
+    border-radius: 6px;
+}
+
+.menu-box.active {
+    background-color: #054035;
+    color: #fff;
+}
+
+.vector-home {
+    width: 320px;
+}
+
+.menu-box.active:hover {
+    background-color: #343f3de3;
+}
+
+.menu-box:hover {
+    background-color: #343f3d1f;
+    cursor: pointer;
+}
+
+.menu-box > .icon {
+    position: relative;
+    top: -3px;
+    font-size: 16px;
+    margin-right: 10px;
+}
+
+span {
+  font-weight: 500;
+  position: relative;
+  top: -2px;
+  font-size: 18px;
+}
+
+.nav-footer {
+    width: 100%;
+    display: flex;
+    align-items: end;
+}
+
+.nav-footer > div {
+    background: #d9d9d97d;
+    width: 100%;
+    padding: 30px 15px;
+}
+
+.menu-container > .screen {
+    overflow-y: auto;
+    max-height: 100vh;
+    width: 100% !important;
+    padding-top: 30px;
+}
+
+.card-image {
+    width: auto !important;
+    height: 300px !important;
+    padding: 30px;
+    max-width: 100%;
+    object-fit: contain;
+}
+
+.image {
+    width: 100%;
+    display: flex !important;
+    justify-content: center !important;
+}
+
+.container-th {
+    margin: 0 30px;
+}
+
+.add-order {
+    z-index: 9;
+    position: fixed;
+    border-radius: 6px;
+    top: 15px;
+    left: 315px;
+    border: transparent;
+    font-size: 18px;
+    padding: 15px;
+    background: #343f3de3;
+    color: #fff;
+}
+
+.container-th > .link {
+    margin-top: 50px !important;
+}
+
+.add-order:hover {
+    background: #343f3d;
+    cursor: pointer;
+}
+
+.form-button-section {
+    height: 38px;
+    width: 250px;
+    margin: 12px 0 !important;
+}
+
+.form-button-section > .positive {
+    background-color: #343f3d !important;
+}
+
+.btn-new {
+    padding: 16px 20px;
+    border-radius: 6px;
+    border: none;
+    background: #e5e5e5;
+}
+
+form > hr {
+    margin: 15px 0;
+    height: 1px;
+    background: #d7d7d7;
+    border: transparent;
+}
+
+.welcome-image {
+    text-align: center;
+    margin-top: 30px;
+}
+
+.welcome-image > img {
+    width: 300px;
+}
+
+p {
+    font-size: 14px;
+}
+
+.welcome-title {
+    display: flex !important;
+    align-items: center;
+}
+
+.read-more {
+    height: 48px;
+    width: 140px;
+    background: #343f3de3 !important;
+    color: #fff !important;
+    font-size: 17px !important;
+    margin-bottom: 15px !important;
+}
+
+.text {
+    border: 1px solid #dfdfdf;
+    border-radius: 6px;
+    padding: 20px;
+    text-align: center;
+}
+
+.text > h1, .text > h3 {
+    font-weight: 500 !important;
+}
+
+.w-100 {
+    width: 100% !important;
+}
+
+.t-center {
+    text-align: center;
+}
+
+.welcome-card {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 80vh;
+}
+
+.mt-3 {
+    margin-top: 12px;
+}

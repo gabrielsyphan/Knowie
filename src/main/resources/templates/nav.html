@@ -1,0 +1,31 @@
+<div class="nav" th:fragment="menu">
+    <div class="item-container">
+        <div class="image-container">
+            <img class="logo" th:src="@{/img/logo.png}" />
+        </div>
+
+        <div class="menu-box-input">
+            <div class="ui icon input menu-box-input-search">
+                <input id="search" class="input-search" type="text" placeholder="Search..." onkeypress="search(event)">
+                <i class="search icon"></i>
+            </div>
+        </div>
+
+        <div class="menu-box" th:classappend="${route} == 'home' ? 'active'" onclick="navigate('')">
+            <i class="home icon"></i>
+            <span>Home</span>
+        </div>
+
+        <div class="menu-box" th:classappend="${route} == 'notifications' ? 'active'" onclick="notImplemented()">
+            <i class="bell icon"></i>
+            <span>Notifications</span>
+        </div>
+    </div>
+
+    <div class="nav-footer">
+        <div>
+            <i class="wrench icon"></i>
+            <span>Settings</span>
+        </div>
+    </div>
+</div>
