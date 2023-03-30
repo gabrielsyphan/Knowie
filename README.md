@@ -1,4 +1,7 @@
-<img src="src/main/resources/static/img/logo.png" width="200px" align="center" alt="Knowie logo" />
+<p align="center">
+  <img src="src/main/resources/static/img/logo.png" width="200px" alt="Knowie logo" />
+</p>
+
 # Knowie
 This is an online school exam project created to PWEB class at Federal Institute of Alagoas.
 
