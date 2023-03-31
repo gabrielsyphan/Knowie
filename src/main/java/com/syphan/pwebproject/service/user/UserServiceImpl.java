@@ -8,6 +8,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
@@ -27,13 +28,23 @@ public class UserServiceImpl implements UserService {
             return UserMapper.INSTANCE.entityToDto(userSaved);
         } catch (Exception e) {
             e.printStackTrace();
-            throw new Exception("UserServiceImpl - create: Error when create user: {}", e);
+            throw new RuntimeException("UserServiceImpl - create: Error when create user: {}", e);
         }
     }
 
     @Override
-    public void delete(UserDto obj) {
-
+    public void delete(long id) {
+        try {
+            Optional<UserEntity> userEntity = this.userRepository.findById(id);
+            if(userEntity.isPresent()) {
+                this.userRepository.delete(userEntity.get());
+            } else {
+                throw new Exception("UserServiceImpl - delete: User not found");
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            throw new RuntimeException("UserServiceImpl - delete: Error when delete user: {}", e);
+        }
     }
 
     @Override

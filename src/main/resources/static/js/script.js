@@ -43,3 +43,33 @@ function submitForm(e, path) {
 
     xhr.send(JSON.stringify(data));
 }
+
+function removeUser(id) {
+    swal({
+        title: "Are you sure?",
+        text: "Once deleted, you will not be able to recover this user!",
+        icon: "warning",
+        buttons: true,
+        dangerMode: true,
+    })
+    .then((willDelete) => {
+        if (willDelete) {
+            const xhr = new XMLHttpRequest();
+            xhr.onreadystatechange = function() {
+                if (xhr.status >= 200 && xhr.status < 300) {
+                    swal("Success!", "The user has been deleted.", "success");
+                    setTimeout(function() {
+                        navigate("users");
+                    }, 2000);
+                } else {
+                    const response = JSON.parse(xhr.responseText);
+                    swal("Error!", "It was not possible to delete the user. Json: "+ response.message.split(":")[1], "error");
+                }
+            };
+
+            xhr.open("DELETE", "/api/v1/users/" + id, true);
+            xhr.setRequestHeader("Content-Type", "application/json");
+            xhr.send();
+        }
+    });
+}

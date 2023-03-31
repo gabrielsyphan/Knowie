@@ -232,7 +232,7 @@ p {
 }
 
 .mt-3 {
-    margin-top: 12px;
+    margin-top: 12px !important;
 }
 
 .image-background {
@@ -263,8 +263,29 @@ p {
 }
 
 .user-card {
-    margin: 10px 0px;
-    background: #efefef;
-    padding: 15px;
-    border-radius: 6px;
+    background: #efefef !important;
+    padding: 15px !important;
+    border-radius: 6px !important;
+    border: transparent !important;
+}
+
+.strong {
+    font-weight: 600;
+}
+
+.div-btn {
+    text-align: center;
+}
+
+.btn-remove {
+    background: #d95032cc !important;
+    color: #fff !important;
+    width: 100%;
+    padding: 10px 0px !important;
+    margin-top: 12px !important;
+}
+
+.btn-remove:hover {
+    background: #cb4c30cc !important;
+    cursor: pointer;
 }

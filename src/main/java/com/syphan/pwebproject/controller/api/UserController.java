@@ -34,6 +34,13 @@ public class UserController {
         return ResponseEntity.created(uri).body(userDto);
     }
 
+    @DeleteMapping(value = PathConstants.USERS + "/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable("id") long id) {
+        log.info("UserController - deleteUser: Delete user with id: {}", id);
+        this.userService.delete(id);
+        return ResponseEntity.noContent().build();
+    }
+
     @GetMapping("/users")
     public String users(Model model) {
         log.info("UserController - getAllUsers: Get all users");

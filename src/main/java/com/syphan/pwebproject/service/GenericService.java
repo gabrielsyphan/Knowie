@@ -2,11 +2,11 @@ package com.syphan.pwebproject.service;
 
 import java.util.List;
 
-public interface GenericService<T, U> {
+public interface GenericService<T> {
 
     T create(T obj) throws Exception;
 
-    void delete(U obj);
+    void delete(long id);
 
     List<T> findAll();
 
