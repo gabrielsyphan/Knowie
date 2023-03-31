@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="~{base :: base-head('List users')}"></head>
+<body>
+<div class="image-background"></div>
+<div class="menu-container">
+    <div th:replace="~{nav :: menu}"></div>
+    <div class="screen">
+        <div class="container-th">
+            <div class="ui">
+                <p class="breadcrumb">users / all</p>
+                <h2>List of all users</h2>
+                <hr/>
+                <button class="btn-new mt-3 button-submit" onclick="navigate('users/new')">Create a new user</button>
+                <div class="user-card" th:each="user : ${users}">
+                    <p th:text="${user.name}"></p>
+                    <p th:text="${user.email}"></p>
+                    <p th:text="${user.phone}"></p>
+                    <p th:text="${user.school}"></p>
+                    <p th:switch="${user.userType}">
+                        <span th:case="1">Student</span>
+                        <span th:case="1">Teacher</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script th:replace="~{base :: base-script}"></script>
+</body>
+</html>

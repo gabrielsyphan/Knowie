@@ -17,3 +17,29 @@ function search(e) {
 function notImplemented() {
     swal("Not implemented yet!", "This feature is not implemented yet!", "error");
 }
+
+function submitForm(e, path) {
+    e.preventDefault();
+
+    const xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+        if (xhr.status >= 200 && xhr.status < 300) {
+            e.target.reset();
+            swal("Success!", "Your registration has been recorded.", "success");
+        } else {
+            const response = JSON.parse(xhr.responseText);
+            swal("Error!", "It was not possible to complete your registration. Json: "+ response.message.split(":")[1], "error");
+        }
+    };
+
+    xhr.open("POST", "/api/v1/"+ path, true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+
+    const formData = new FormData(e.target);
+    const data = {};
+    for (const [key, value] of formData.entries()) {
+      data[key] = value;
+    }
+
+    xhr.send(JSON.stringify(data));
+}

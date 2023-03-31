@@ -16,6 +16,21 @@
             <span>Home</span>
         </div>
 
+        <div class="menu-box" th:classappend="${route} == 'exams' ? 'active'" onclick="navigate('exams')">
+            <i class="clipboard icon"></i>
+            <span>Exams</span>
+        </div>
+
+        <div class="menu-box" th:classappend="${route} == 'answers' ? 'active'" onclick="navigate('answers')">
+            <i class="book icon"></i>
+            <span>Answers</span>
+        </div>
+
+        <div class="menu-box" th:classappend="${route} == 'users' ? 'active'" onclick="navigate('users')">
+            <i class="users icon"></i>
+            <span>Users</span>
+        </div>
+
         <div class="menu-box" th:classappend="${route} == 'notifications' ? 'active'" onclick="notImplemented()">
             <i class="bell icon"></i>
             <span>Notifications</span>
