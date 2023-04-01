@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="~{base :: base-head('User list')}"></head>
+<body>
+<div class="image-background"></div>
+<div class="menu-container">
+  <div th:replace="~{nav :: menu}"></div>
+  <div class="screen">
+    <div class="container-th">
+      <div class="ui">
+        <p class="breadcrumb">questions / all</p>
+        <button class="button-menu" onclick="showNav()">
+          <i class="align justify icon"></i>
+        </button>
+        <h2>List of all questions</h2>
+        <hr/>
+        <button class="btn-new mt-3 button-submit" onclick="navigate('questions/new')">Create a new question</button>
+      </div>
+    </div>
+  </div>
+</div>
+<script th:replace="~{base :: base-script}"></script>
+</body>
+</html>

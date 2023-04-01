@@ -26,8 +26,8 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PostMapping(value = PathConstants.USERS, consumes = "application/json", produces = "application/json")
-    public ResponseEntity<UserDto> createUser(@RequestBody @Valid UserDto userDto, UriComponentsBuilder uriComponentsBuilder) throws Exception {
+    @PutMapping(value = PathConstants.USERS, consumes = "application/json", produces = "application/json")
+    public ResponseEntity<UserDto> saveUser(@RequestBody @Valid UserDto userDto, UriComponentsBuilder uriComponentsBuilder) throws Exception {
         log.info("UserController - createUser: Create user: {}", userDto);
         UserDto createdUser = this.userService.create(userDto);
         URI uri = uriComponentsBuilder.path("users/{id}").buildAndExpand(createdUser.getId()).toUri();
@@ -42,12 +42,21 @@ public class UserController {
     }
 
     @GetMapping("/users")
-    public String users(Model model) {
+    public String getAllUsers(Model model) {
         log.info("UserController - getAllUsers: Get all users");
         List<UserDto> users = this.userService.findAll();
         model.addAttribute("users", users);
         model.addAttribute("route", "users");
         return "users/all";
+    }
+
+    @GetMapping("/users/{id}")
+    public String getUserById(@PathVariable("id") long id, Model model) {
+        log.info("UserController - getUser: Get user with id: {}", id);
+        UserDto user = this.userService.findById(id);
+        model.addAttribute("user", user);
+        model.addAttribute("route", "users");
+        return "users/new";
     }
 
     @GetMapping("/users/new")

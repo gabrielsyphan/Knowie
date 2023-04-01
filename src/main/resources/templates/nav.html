@@ -1,4 +1,4 @@
-<div class="nav" th:fragment="menu">
+<div id="nav" class="nav" th:fragment="menu">
     <div class="item-container">
         <div class="image-container">
             <img class="logo" th:src="@{/img/logo.png}" />
@@ -19,6 +19,11 @@
         <div class="menu-box" th:classappend="${route} == 'exams' ? 'active'" onclick="notImplemented()">
             <i class="clipboard icon"></i>
             <span>Exams</span>
+        </div>
+
+        <div class="menu-box" th:classappend="${route} == 'questions' ? 'active'" onclick="navigate('questions')">
+            <i class="tasks icon"></i>
+            <span>Questions</span>
         </div>
 
         <div class="menu-box" th:classappend="${route} == 'answers' ? 'active'" onclick="notImplemented()">

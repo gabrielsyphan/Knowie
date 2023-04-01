@@ -9,11 +9,18 @@
         <div class="container-th">
             <div class="ui">
                 <p class="breadcrumb">users / all</p>
+                <button class="button-menu" onclick="showNav()">
+                    <i class="align justify icon"></i>
+                </button>
                 <h2>List of all users</h2>
                 <hr/>
                 <button class="btn-new mt-3 button-submit" onclick="navigate('users/new')">Create a new user</button>
                 <div class="d-flex ui cards mt-3">
                     <div class="user-card ui card" th:each="user : ${users}">
+                        <button class="button-edit" th:onclick="navigate('users/' + [[${user.id}]])">
+                            <i class="edit icon"></i>
+                        </button>
+
                         <label class="strong">Nome:</label>
                         <p th:text="${user.name}"></p>
 

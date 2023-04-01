@@ -8,37 +8,46 @@
     <div class="screen">
         <div class="container-th">
             <div class="ui">
+                <button class="button-menu" onclick="showNav()">
+                    <i class="align justify icon"></i>
+                </button>
                 <p class="breadcrumb">users / new</p>
                 <form class="ui form" method="post" onsubmit="submitForm(event, 'users')">
                     <h2>Create new user</h2>
                     <hr/>
 
+                    <input class="ui input" name="id" th:attr="value=${user != null ? user.id : ''}" type="hidden" readonly>
+
                     <div class="field">
                         <label>Name</label>
-                        <input class="ui input" name="name" type="text" placeholder="Adam Sandler" required>
+                        <input class="ui input" name="name" th:attr="value=${user != null ? user.name : ''}" type="text"
+                               placeholder="Adam Sandler" required>
                     </div>
 
                     <div class="field">
                         <label>Email</label>
-                        <input class="ui input" name="email" type="email" placeholder="adamsandler@gmail.com" required>
+                        <input class="ui input" th:attr="value=${user != null ? user.email : ''}" name="email"
+                               type="email" placeholder="adamsandler@gmail.com" required>
                     </div>
 
                     <div class="field">
                         <label>Phone number</label>
-                        <input class="ui input" name="phone" type="number" placeholder="(00) 0 0000-0000" required>
+                        <input class="ui input" th:attr="value=${user != null ? user.phone : ''}" name="phone"
+                               type="number" placeholder="(00) 0 0000-0000" required>
                     </div>
 
                     <div class="field">
                         <label>School</label>
-                        <input class="ui input" name="school" type="text" placeholder="Federal Anstitute of Alagoas"
+                        <input class="ui input" th:attr="value=${user != null ? user.school : ''}" name="school"
+                               type="text" placeholder="Federal Anstitute of Alagoas"
                                required>
                     </div>
 
                     <div class="field">
                         <label>User type:</label>
-                        <select name="userType">
-                            <option value="1">Student</option>
-                            <option value="2">Teacher</option>
+                        <select name="userType" th:selected="${user == null}">
+                            <option value="1" th:selected="${user != null && user.userType == 1}">Student</option>
+                            <option value="2" th:selected="${user != null && user.userType == 2}">Teacher</option>
                         </select>
                     </div>
 

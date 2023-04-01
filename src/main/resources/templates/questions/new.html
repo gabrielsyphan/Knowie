@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="~{base :: base-head('Create new question')}"></head>
+<body>
+<div class="image-background"></div>
+<div class="menu-container">
+  <div th:replace="~{nav :: menu}"></div>
+  <div class="screen">
+    <div class="container-th">
+      <div class="ui">
+        <button class="button-menu" onclick="showNav()">
+          <i class="align justify icon"></i>
+        </button>
+        <p class="breadcrumb">questions / new</p>
+        <form class="ui form" method="post" onsubmit="submitForm(event, 'questions')">
+
+          <button class="ui button button-reset" type="button" onclick="navigate('questions')">Return</button>
+          <button class="ui button button-submit" type="submit">Submit</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<script th:replace="~{base :: base-script}"></script>
+</body>
+</html>

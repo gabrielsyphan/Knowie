@@ -7,9 +7,9 @@ function search(e) {
     if(key == 13){
         const searchValue = document.getElementById("search").value;
         if (searchValue !== "") {
-            navigate("order/" + searchValue);
+            navigate("question/" + searchValue);
         } else {
-            navigate("order");
+            navigate("/");
         }
     }
 }
@@ -26,13 +26,16 @@ function submitForm(e, path) {
         if (xhr.status >= 200 && xhr.status < 300) {
             e.target.reset();
             swal("Success!", "Your registration has been recorded.", "success");
+            setTimeout(function() {
+                navigate("users");
+            }, 2000);
         } else {
             const response = JSON.parse(xhr.responseText);
             swal("Error!", "It was not possible to complete your registration. Json: "+ response.message.split(":")[1], "error");
         }
     };
 
-    xhr.open("POST", "/api/v1/"+ path, true);
+    xhr.open("PUT", "/api/v1/"+ path, true);
     xhr.setRequestHeader("Content-Type", "application/json");
 
     const formData = new FormData(e.target);
@@ -72,4 +75,13 @@ function removeUser(id) {
             xhr.send();
         }
     });
+}
+
+function showNav() {
+    const menu = document.getElementById("nav");
+    if (menu.style.display === "none") {
+        menu.style.display = "grid";
+    } else {
+        menu.style.display = "none";
+    }
 }

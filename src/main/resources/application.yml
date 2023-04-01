@@ -1,7 +1,7 @@
 server:
   error:
     include-stacktrace: on-param
-  port: 80
+  port: 8080
 spring:
   application:
     name: pweb_project

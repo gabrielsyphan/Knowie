@@ -24,6 +24,15 @@ public class UserServiceImpl implements UserService {
     public UserDto create(UserDto obj) throws Exception {
         try {
             UserEntity userEntity = UserMapper.INSTANCE.dtoToEntity(obj);
+
+            if(userEntity.getId() != null) {
+                UserEntity userEntityFound = this.userRepository.findById(userEntity.getId()).orElseThrow(
+                        () -> new Exception("UserServiceImpl - create/update: User not found")
+                );
+                UserEntity userEntityUpdated = UserMapper.INSTANCE.updateEntity(userEntity, userEntityFound);
+                return UserMapper.INSTANCE.entityToDto(this.userRepository.saveAndFlush(userEntityUpdated));
+            }
+
             UserEntity userSaved = this.userRepository.save(userEntity);
             return UserMapper.INSTANCE.entityToDto(userSaved);
         } catch (Exception e) {
@@ -55,6 +64,8 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto findById(long id) {
-        return null;
+        return this.userRepository.findById(id).map(UserMapper.INSTANCE::entityToDto).orElseThrow(
+                () -> new RuntimeException("UserServiceImpl - findById: User not found")
+        );
     }
 }

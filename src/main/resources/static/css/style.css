@@ -9,7 +9,6 @@
     width: 300px;
     height: 100vh;
     border: 1px solid #cfcfcf94;
-    display: grid;
     z-index: 9;
 }
 
@@ -163,11 +162,12 @@ span {
     padding: 16px 20px;
     border-radius: 6px;
     border: none;
-    background: #e5e5e5;
+    background: #054035;
+    color: #fff;
 }
 
 .btn-new:hover {
-    background: #d7d7d7;
+    background: #075244;
     cursor: pointer;
 }
 
@@ -288,4 +288,65 @@ p {
 .btn-remove:hover {
     background: #cb4c30cc !important;
     cursor: pointer;
+}
+
+.button-edit {
+    width: 26px;
+    padding: 3px;
+    text-align: center;
+    position: absolute;
+    top: 12px;
+    font-size: 20px;
+    right: 12px;
+    border: none;
+    color: #4a4a4a;
+}
+
+.button-edit:hover {
+    cursor: pointer;
+    border-radius: 6px !important;
+    background: #d9d9d9;
+}
+
+.button-menu {
+    display: none;
+}
+
+@media only screen and (min-width: 769px) {
+    .nav {
+        display: grid;
+    }
+}
+
+@media only screen and (max-width: 768px) {
+    .button-menu {
+        font-size: 20px;
+        display: block;
+        width: 60px;
+        position: absolute;
+        height: 60px;
+        border-radius: 100%;
+        border: none;
+        bottom: 30px;
+        right: 40px;
+        z-index: 20;
+        background: #c9c9c9;
+        box-shadow: rgb(100 100 111 / 20%) 0px 7px 29px 0px;
+   }
+
+   .button-menu:hover {
+        cursor: pointer;
+        background: #bfbfbf;
+   }
+
+  .nav {
+        display: none;
+        position: fixed;
+        z-index: 999 !important;
+        box-shadow: rgb(100 100 111 / 20%) 0px 7px 29px 0px;
+  }
+
+  .user-card {
+        width: 100% !important;
+  }
 }
