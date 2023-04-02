@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Entity
@@ -23,10 +24,18 @@ public class QuestionEntity {
 
     private Integer difficulty;
 
+    @ElementCollection
     private List<String> tags;
 
     private Integer answerType;
 
     @ElementCollection
     private List<String> answerValues;
+
+    private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
+
+    @ManyToOne
+    private UserEntity user;
 }

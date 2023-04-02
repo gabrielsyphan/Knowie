@@ -20,7 +20,6 @@
 
 .logo {
     padding: 15px;
-    background: #fff;
     border-radius: 100%;
     width: 70%;
 }
@@ -146,6 +145,20 @@ span {
 .add-order:hover {
     background: #343f3d;
     cursor: pointer;
+}
+
+.img-picture {
+    width: 38px;
+    border: 1px solid darkgrey;
+    border-radius: 100%;
+    position: relative;
+    left: 10px;
+}
+
+.user-name-profile-menu {
+    position: relative;
+    top: -10px;
+    left: 20px;
 }
 
 .form-button-section {
@@ -316,6 +329,10 @@ p {
     display: none;
 }
 
+.button-menu > i {
+    margin: 0 auto !important;
+}
+
 .btn-ipt-add {
     background: #f25835 !important;
     color: #fff !important;
@@ -347,23 +364,23 @@ p {
 
 @media only screen and (max-width: 768px) {
     .button-menu {
-        font-size: 20px;
-        display: block;
-        width: 60px;
-        position: absolute;
-        height: 60px;
-        border-radius: 100%;
-        border: none;
-        bottom: 30px;
-        right: 40px;
-        z-index: 20;
-        background: #c9c9c9;
-        box-shadow: rgb(100 100 111 / 20%) 0px 7px 29px 0px;
+        font-size: 20px !important;
+        display: block !important;
+        width: 60px !important;
+        position: absolute !important;
+        height: 60px !important;
+        border-radius: 100% !important;
+        border: none !important;
+        bottom: 15px !important;
+        right: 15px !important;
+        z-index: 20 !important;
+        background: #c9c9c9 !important;
+        box-shadow: rgb(100 100 111 / 20%) 0px 7px 29px 0px !important;
    }
 
    .button-menu:hover {
-        cursor: pointer;
-        background: #bfbfbf;
+        cursor: pointer !important;
+        background: #bfbfbf !important;
    }
 
   .nav {

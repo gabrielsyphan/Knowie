@@ -16,12 +16,12 @@
                     <h2>Create new question</h2>
                     <hr/>
 
-                    <input class="ui input" name="id" th:attr="value=${question != null ? user.id : ''}" type="hidden"
+                    <input class="ui input" name="id" th:attr="value=${question != null ? question.id : ''}" type="hidden"
                            readonly>
 
                     <div class="field">
                         <label>Question</label>
-                        <input class="ui input" name="name" th:attr="value=${question != null ? user.name : ''}"
+                        <input class="ui input" name="name" th:attr="value=${question != null ? question.name : ''}"
                                type="text"
                                placeholder="What is the difference between a class and an object?" required>
                     </div>
@@ -40,7 +40,7 @@
                     <div class="field">
                         <label>Tags</label>
                         <div class="ui action input">
-                            <input class="ui input" name="tag" th:attr="value=${question != null ? user.name : ''}"
+                            <input class="ui input" name="tag"
                                    type="text"
                                    placeholder="java oop class object inheritance polymorphism encapsulation abstraction">
                             <button class="ui teal right labeled icon button btn-ipt-add" type="button"
@@ -82,5 +82,14 @@
     </div>
 </div>
 <script th:replace="~{base :: base-script}"></script>
+<script th:inline="javascript">
+        const tagsFromBase = [[${question} != null ? ${question.tags} : '']];
+        tagsFromBase.forEach(function (tag) {
+            addTag(tag);
+        });
+
+        const answerChoices = [[${question} != null ? ${question.answerValues} : '']];
+        addAnswerChoices(answerChoices);
+    </script>
 </body>
 </html>

@@ -1,5 +1,6 @@
 package com.syphan.pwebproject.model.dto;
 
+import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
@@ -9,6 +10,7 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Data
@@ -36,4 +38,11 @@ public class QuestionDto {
     private Integer answerType;
 
     private List<String> answerValues;
+
+    private LocalDateTime createdAt;
+
+    private LocalDateTime updatedAt;
+
+    @Valid
+    private UserDto user;
 }

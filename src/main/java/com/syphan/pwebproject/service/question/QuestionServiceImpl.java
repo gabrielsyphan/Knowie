@@ -1,12 +1,15 @@
 package com.syphan.pwebproject.service.question;
 
 import com.syphan.pwebproject.model.dto.QuestionDto;
+import com.syphan.pwebproject.model.dto.UserDto;
 import com.syphan.pwebproject.model.entity.QuestionEntity;
+import com.syphan.pwebproject.model.entity.UserEntity;
 import com.syphan.pwebproject.model.mapper.QuestionMapper;
 import com.syphan.pwebproject.repository.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Optional;
 
@@ -30,9 +33,12 @@ public class QuestionServiceImpl implements QuestionService {
                         () -> new Exception("QuestionServiceImpl - create/update: Question not found")
                 );
                 QuestionEntity questionEntityUpdated = QuestionMapper.INSTANCE.updateEntity(questionEntity, userEntityFound);
+                questionEntityUpdated.setUpdatedAt(LocalDateTime.now());
                 return QuestionMapper.INSTANCE.entityToDto(this.questionRepository.saveAndFlush(questionEntityUpdated));
             }
 
+            questionEntity.setCreatedAt(LocalDateTime.now());
+            questionEntity.setUpdatedAt(LocalDateTime.now());
             QuestionEntity questionSaved = this.questionRepository.save(questionEntity);
             return QuestionMapper.INSTANCE.entityToDto(questionSaved);
         } catch (Exception e) {
@@ -59,13 +65,27 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     public List<QuestionDto> findAll() {
         List<QuestionEntity> questionEntities = this.questionRepository.findAll();
-        return questionEntities.stream().map(QuestionMapper.INSTANCE::entityToDto).toList();
+        return questionEntities.stream().map(this::formatQuestion).toList();
     }
 
     @Override
     public QuestionDto findById(long id) {
-        return this.questionRepository.findById(id).map(QuestionMapper.INSTANCE::entityToDto).orElseThrow(
+        return this.questionRepository.findById(id).map(this::formatQuestion).orElseThrow(
                 () -> new RuntimeException("QuestionServiceImpl - findById: Question not found")
         );
+    }
+
+    private QuestionDto formatQuestion(QuestionEntity questionDto) {
+        if (questionDto.getUser() == null) {
+            questionDto.setUser(
+                    UserEntity.builder()
+                            .name("ADMIN")
+                            .email("admin@knowie.com")
+                            .userType(3L)
+                            .phone(123456789L)
+                            .build()
+            );
+        }
+        return QuestionMapper.INSTANCE.entityToDto(questionDto);
     }
 }

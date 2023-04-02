@@ -1,5 +1,6 @@
-tags = [];
+let tags = window.tagsList || [];
 let answerValues = {};
+let answerCount = 0;
 
 function navigate(route) {
     window.location.href = window.location.origin + "/" + route;
@@ -31,7 +32,7 @@ function submitForm(e, path) {
             swal("Success!", "Your registration has been recorded.", "success");
             setTimeout(function() {
                 navigate(path);
-            }, 2000);
+            }, 1000);
         } else {
             const response = JSON.parse(xhr.responseText);
             swal("Error!", "It was not possible to complete your registration. Json: "+ response.message.split(":")[2] , "error");
@@ -76,7 +77,7 @@ function removeData(id, path) {
                     swal("Success!", "The user has been deleted.", "success");
                     setTimeout(function() {
                         navigate(path);
-                    }, 2000);
+                    }, 1000);
                 } else {
                     const response = JSON.parse(xhr.responseText);
                     swal("Error!", "It was not possible to delete the user. Json: "+ response.message.split(":")[1], "error");
@@ -165,6 +166,23 @@ function addInputs(answerType) {
             </div>
         `;
       }
+}
+
+function addAnswerChoices(answers) {
+    let inputContainer = document.getElementById("answerInputs");
+    inputContainer.innerHTML = "";
+
+    if(answers.length > 0) {
+        answers.forEach(answer => {
+            answerCount++;
+            inputContainer.innerHTML += `
+                <div class="field">
+                    <label>Choose nº${answerCount}</label>
+                    <input type="text" name="answerChoice" onchange="answerValues.option${answerCount} = this.value" value="${answer}" required>
+                </div>
+            `;
+        });
+    }
 }
 
 document.getElementById("answerType").addEventListener("change", function() {

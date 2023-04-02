@@ -36,14 +36,20 @@
                             <p th:case="4">True or False</p>
                         </div>
 
-                        <label class="strong mt-3">Tags:</label>
+                        <label class="strong mt-3">Created by:</label>
+                        <p th:text="${question.user.name}"></p>
+
+                        <label class="strong">Created at:</label>
+                        <p th:text="${#temporals.format(question.createdAt, 'dd/MM/yyyy HH:mm')}"></p>
+
+                        <label class="strong">Tags:</label>
                         <div class="ui knowie labels mt-2">
                             <a class="ui label" th:each="tag : ${question.tags}">
                                 <span class="tag-list-show" th:text="${tag}"></span>
                             </a>
                         </div>
 
-                        <div class="div-btn">
+                        <div class="div-btn mt-2">
                             <button class="ui button btn-remove" th:onclick="removeData([[${question.id}]], 'questions')">Remove</button>
                         </div>
                     </div>

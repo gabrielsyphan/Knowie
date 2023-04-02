@@ -17,5 +17,6 @@ public interface QuestionMapper {
     public abstract QuestionDto entityToDto(QuestionEntity questionEntity);
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "createdAt", ignore = true)
     public abstract QuestionEntity updateEntity(QuestionEntity questionEntityOrig, @MappingTarget QuestionEntity questionEntityDest);
 }
