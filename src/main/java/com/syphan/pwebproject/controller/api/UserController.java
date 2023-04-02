@@ -26,21 +26,6 @@ public class UserController {
         this.userService = userService;
     }
 
-    @PutMapping(value = PathConstants.USERS, consumes = "application/json", produces = "application/json")
-    public ResponseEntity<UserDto> saveUser(@RequestBody @Valid UserDto userDto, UriComponentsBuilder uriComponentsBuilder) throws Exception {
-        log.info("UserController - createUser: Create user: {}", userDto);
-        UserDto createdUser = this.userService.create(userDto);
-        URI uri = uriComponentsBuilder.path("users/{id}").buildAndExpand(createdUser.getId()).toUri();
-        return ResponseEntity.created(uri).body(userDto);
-    }
-
-    @DeleteMapping(value = PathConstants.USERS + "/{id}")
-    public ResponseEntity<Void> deleteUser(@PathVariable("id") long id) {
-        log.info("UserController - deleteUser: Delete user with id: {}", id);
-        this.userService.delete(id);
-        return ResponseEntity.noContent().build();
-    }
-
     @GetMapping("/users")
     public String getAllUsers(Model model) {
         log.info("UserController - getAllUsers: Get all users");
@@ -63,5 +48,20 @@ public class UserController {
     public String newUser(Model model) {
         model.addAttribute("route", "users");
         return "users/new";
+    }
+
+    @PutMapping(value = PathConstants.USERS, consumes = "application/json", produces = "application/json")
+    public ResponseEntity<UserDto> saveUser(@RequestBody @Valid UserDto userDto, UriComponentsBuilder uriComponentsBuilder) throws Exception {
+        log.info("UserController - createUser: Create user: {}", userDto);
+        UserDto createdUser = this.userService.create(userDto);
+        URI uri = uriComponentsBuilder.path("users/{id}").buildAndExpand(createdUser.getId()).toUri();
+        return ResponseEntity.created(uri).body(createdUser);
+    }
+
+    @DeleteMapping(value = PathConstants.USERS + "/{id}")
+    public ResponseEntity<Void> deleteUser(@PathVariable("id") long id) {
+        log.info("UserController - deleteUser: Delete user with id: {}", id);
+        this.userService.delete(id);
+        return ResponseEntity.noContent().build();
     }
 }

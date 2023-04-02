@@ -45,7 +45,7 @@
 
                     <div class="field">
                         <label>User type:</label>
-                        <select name="userType" th:selected="${user == null}">
+                        <select name="userType" class="ui input" th:selected="${user == null}">
                             <option value="1" th:selected="${user != null && user.userType == 1}">Student</option>
                             <option value="2" th:selected="${user != null && user.userType == 2}">Teacher</option>
                         </select>

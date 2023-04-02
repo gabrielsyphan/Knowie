@@ -1,3 +1,6 @@
+tags = [];
+let answerValues = {};
+
 function navigate(route) {
     window.location.href = window.location.origin + "/" + route;
 }
@@ -27,11 +30,11 @@ function submitForm(e, path) {
             e.target.reset();
             swal("Success!", "Your registration has been recorded.", "success");
             setTimeout(function() {
-                navigate("users");
+                navigate(path);
             }, 2000);
         } else {
             const response = JSON.parse(xhr.responseText);
-            swal("Error!", "It was not possible to complete your registration. Json: "+ response.message.split(":")[1], "error");
+            swal("Error!", "It was not possible to complete your registration. Json: "+ response.message.split(":")[2] , "error");
         }
     };
 
@@ -44,13 +47,23 @@ function submitForm(e, path) {
       data[key] = value;
     }
 
+    if (path == "questions") {
+        data["tags"] = tags;
+        data["answerValues"] = [
+            answerValues.option1,
+            answerValues.option2,
+            answerValues.option3,
+            answerValues.option4
+        ];
+    }
+
     xhr.send(JSON.stringify(data));
 }
 
-function removeUser(id) {
+function removeData(id, path) {
     swal({
         title: "Are you sure?",
-        text: "Once deleted, you will not be able to recover this user!",
+        text: "Once deleted, you will not be able to recover this data!",
         icon: "warning",
         buttons: true,
         dangerMode: true,
@@ -62,7 +75,7 @@ function removeUser(id) {
                 if (xhr.status >= 200 && xhr.status < 300) {
                     swal("Success!", "The user has been deleted.", "success");
                     setTimeout(function() {
-                        navigate("users");
+                        navigate(path);
                     }, 2000);
                 } else {
                     const response = JSON.parse(xhr.responseText);
@@ -70,7 +83,7 @@ function removeUser(id) {
                 }
             };
 
-            xhr.open("DELETE", "/api/v1/users/" + id, true);
+            xhr.open("DELETE", "/api/v1/"+ path +"/" + id, true);
             xhr.setRequestHeader("Content-Type", "application/json");
             xhr.send();
         }
@@ -85,3 +98,75 @@ function showNav() {
         menu.style.display = "none";
     }
 }
+
+function addTag(tag) {
+    if(tag.length > 0) {
+        if (tags.length < 5) {
+            tags.push(tag);
+            updateTags();
+            document.querySelector('input[name=tag]').value = '';
+        } else {
+            swal("Error!", "You can only add 5 tags.", "error");
+        }
+    }
+}
+
+function updateTags() {
+    const tagArea = document.querySelector('.tag-area');
+    tagArea.innerHTML = '';
+    tags.forEach(tag => {
+        const tagElement = document.createElement('a');
+        tagElement.classList.add('ui', 'label');
+        tagElement.textContent = tag;
+        const closeIcon = document.createElement('i');
+        closeIcon.classList.add('icon', 'close');
+        tagElement.appendChild(closeIcon);
+        tagArea.appendChild(tagElement);
+
+        closeIcon.addEventListener('click', () => {
+            removeTag(tag);
+        });
+
+        tagElement.addEventListener('click', () => {
+            removeTag(tag);
+        });
+    });
+}
+
+function removeTag(tag) {
+    const index = tags.indexOf(tag);
+    if (index !== -1) {
+        tags.splice(index, 1);
+        updateTags();
+    }
+}
+
+function addInputs(answerType) {
+    let inputContainer = document.getElementById("answerInputs");
+    inputContainer.innerHTML = "";
+
+    if (answerType == "2" || answerType == "3") {
+        inputContainer.innerHTML = `
+            <div class="field">
+                <label>Choose nº1</label>
+                <input type="text" name="answerChoice" onchange="answerValues.option1 = this.value" required>
+            </div>
+            <div class="field">
+                <label>Choose nº2</label>
+                <input type="text" name="answerChoice" onchange="answerValues.option2 = this.value" required>
+            </div>
+            <div class="field">
+                <label>Choose nº3</label>
+                <input type="text" name="answerChoice" onchange="answerValues.option3 = this.value">
+            </div>
+            <div class="field">
+                <label>Choose nº4</label>
+                <input type="text" name="answerChoice" onchange="answerValues.option4 = this.value">
+            </div>
+        `;
+      }
+}
+
+document.getElementById("answerType").addEventListener("change", function() {
+    addInputs(this.value);
+});

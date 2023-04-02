@@ -4,22 +4,82 @@
 <body>
 <div class="image-background"></div>
 <div class="menu-container">
-  <div th:replace="~{nav :: menu}"></div>
-  <div class="screen">
-    <div class="container-th">
-      <div class="ui">
-        <button class="button-menu" onclick="showNav()">
-          <i class="align justify icon"></i>
-        </button>
-        <p class="breadcrumb">questions / new</p>
-        <form class="ui form" method="post" onsubmit="submitForm(event, 'questions')">
+    <div th:replace="~{nav :: menu}"></div>
+    <div class="screen">
+        <div class="container-th">
+            <div class="ui">
+                <button class="button-menu" onclick="showNav()">
+                    <i class="align justify icon"></i>
+                </button>
+                <p class="breadcrumb">questions / new</p>
+                <form class="ui form" method="post" onsubmit="submitForm(event, 'questions')">
+                    <h2>Create new question</h2>
+                    <hr/>
 
-          <button class="ui button button-reset" type="button" onclick="navigate('questions')">Return</button>
-          <button class="ui button button-submit" type="submit">Submit</button>
-        </form>
-      </div>
+                    <input class="ui input" name="id" th:attr="value=${question != null ? user.id : ''}" type="hidden"
+                           readonly>
+
+                    <div class="field">
+                        <label>Question</label>
+                        <input class="ui input" name="name" th:attr="value=${question != null ? user.name : ''}"
+                               type="text"
+                               placeholder="What is the difference between a class and an object?" required>
+                    </div>
+
+                    <div class="field">
+                        <label>Difficulty</label>
+                        <select name="difficulty" th:selected="${question == null}">
+                            <option value="1" th:selected="${question != null && question.difficulty == 1}">1</option>
+                            <option value="2" th:selected="${question != null && question.difficulty == 2}">2</option>
+                            <option value="3" th:selected="${question != null && question.difficulty == 3}">3</option>
+                            <option value="4" th:selected="${question != null && question.difficulty == 4}">4</option>
+                            <option value="5" th:selected="${question != null && question.difficulty == 5}">5</option>
+                        </select>
+                    </div>
+
+                    <div class="field">
+                        <label>Tags</label>
+                        <div class="ui action input">
+                            <input class="ui input" name="tag" th:attr="value=${question != null ? user.name : ''}"
+                                   type="text"
+                                   placeholder="java oop class object inheritance polymorphism encapsulation abstraction">
+                            <button class="ui teal right labeled icon button btn-ipt-add" type="button"
+                                    onclick="addTag(document.querySelector('input[name=tag]').value);">
+                                <i class="plus icon"></i>
+                                Add
+                            </button>
+                        </div>
+                        <div class="ui knowie labels tag-area mt-3"></div>
+                    </div>
+
+                    <div class="field">
+                        <label>Answer type</label>
+                        <select id="answerType" name="answerType" th:selected="${question == null}">
+                            <option value="1" th:selected="${question != null && question.answerType == 1}">
+                                Open-ended
+                            </option>
+                            <option value="2" th:selected="${question != null && question.answerType == 2}">Single
+                                choice
+                            </option>
+                            <option value="3" th:selected="${question != null && question.answerType == 3}">Multiple
+                                choice
+                            </option>
+                            <option value="4" th:selected="${question != null && question.answerType == 4}"> True or
+                                False
+                            </option>
+                        </select>
+                    </div>
+
+                    <div id="answerInputs"></div>
+
+                    <div class="mt-3">
+                        <button class="ui button button-reset" type="button" onclick="navigate('questions')">Return</button>
+                        <button class="ui button button-submit" type="submit">Submit</button>
+                    </div>
+                </form>
+            </div>
+        </div>
     </div>
-  </div>
 </div>
 <script th:replace="~{base :: base-script}"></script>
 </body>

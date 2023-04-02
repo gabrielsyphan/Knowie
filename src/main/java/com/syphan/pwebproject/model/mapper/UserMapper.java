@@ -12,10 +12,10 @@ public interface UserMapper {
 
     public static final UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
-    public abstract UserEntity dtoToEntity(UserDto benefitDto);
+    public abstract UserEntity dtoToEntity(UserDto userDto);
 
-    public abstract UserDto entityToDto(UserEntity benefitEntity);
+    public abstract UserDto entityToDto(UserEntity user);
 
     @Mapping(target = "id", ignore = true)
-    public abstract UserEntity updateEntity(UserEntity entityOrig, @MappingTarget UserEntity entityDest);
+    public abstract UserEntity updateEntity(UserEntity userEntityOrig, @MappingTarget UserEntity userEntityDest);
 }

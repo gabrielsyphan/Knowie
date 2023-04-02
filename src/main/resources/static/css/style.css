@@ -231,6 +231,10 @@ p {
     height: 80vh;
 }
 
+.mt-2 {
+    margin-top: 8px !important;
+}
+
 .mt-3 {
     margin-top: 12px !important;
 }
@@ -310,6 +314,29 @@ p {
 
 .button-menu {
     display: none;
+}
+
+.btn-ipt-add {
+    background: #f25835 !important;
+    color: #fff !important;
+}
+
+.btn-ipt-add:hover {
+    background: #e15434 !important;
+    cursor: pointer;
+}
+
+.ui.knowie.label, .ui.knowie.labels .label {
+    background: #bf6a4b !important;
+    color: #fff !important;
+}
+
+.ui.knowie.label, .ui.knowie.labels .label:hover {
+    background: #c36e4f !important
+}
+
+.tag-list-show {
+    all: unset;
 }
 
 @media only screen and (min-width: 769px) {

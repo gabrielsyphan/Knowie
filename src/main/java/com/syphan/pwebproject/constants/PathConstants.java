@@ -8,5 +8,7 @@ public class PathConstants {
 
     public static final String EXAMS = BASE_PATH + "/exams";
 
+    public static final String QUESTIONS = BASE_PATH + "/questions";
+
     public static final String USERS = BASE_PATH + "/users";
 }
