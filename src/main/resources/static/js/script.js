@@ -93,10 +93,10 @@ function removeData(id, path) {
 
 function showNav() {
     const menu = document.getElementById("nav");
-    if (menu.style.display === "none") {
-        menu.style.display = "grid";
-    } else {
+    if (menu.style.display === "grid") {
         menu.style.display = "none";
+    } else {
+        menu.style.display = "grid";
     }
 }
 

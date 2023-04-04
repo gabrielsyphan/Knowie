@@ -12,6 +12,6 @@ public class GenericPagesWebController {
     @GetMapping
     public String home(Model model) {
         model.addAttribute("route", "home");
-        return "home/home";
+        return "generic/home";
     }
 }

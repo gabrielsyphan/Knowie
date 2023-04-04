@@ -107,8 +107,16 @@ span {
     z-index: 9;
 }
 
+.card-left {
+    width: 26% !important;
+}
+
+.card-right {
+    width: 72% !important;
+}
+
 .card-image {
-    width: auto !important;
+    width: auto;
     height: 300px !important;
     padding: 30px;
     max-width: 100%;
@@ -348,6 +356,22 @@ p {
     color: #fff !important;
 }
 
+.vector-dashboard {
+    width: 100%;
+}
+
+.card-image {
+    height: auto !important;
+}
+
+.title-dash {
+    margin: 0;
+}
+
+.button-dash {
+    margin-bottom: 15px;
+}
+
 .ui.knowie.label, .ui.knowie.labels .label:hover {
     background: #c36e4f !important
 }
@@ -386,6 +410,7 @@ p {
   .nav {
         display: none;
         position: fixed;
+        overflow-y: auto;
         z-index: 999 !important;
         box-shadow: rgb(100 100 111 / 20%) 0px 7px 29px 0px;
   }
