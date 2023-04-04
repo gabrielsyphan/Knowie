@@ -19,3 +19,4 @@ You should have Docker compose, Maven and JDK 17 installed on your machine.
 
 ## Contributors
 * [Gabriel Syphan](https://github.com/gabrielsyphan)
+* [Knowie Website](http://knowie.site)
