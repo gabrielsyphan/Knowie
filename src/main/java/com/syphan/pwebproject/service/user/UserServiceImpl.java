@@ -5,6 +5,8 @@ import com.syphan.pwebproject.model.entity.UserEntity;
 import com.syphan.pwebproject.model.mapper.UserMapper;
 import com.syphan.pwebproject.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCrypt;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -14,6 +16,9 @@ import java.util.Optional;
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository) {
@@ -33,6 +38,11 @@ public class UserServiceImpl implements UserService {
                 return UserMapper.INSTANCE.entityToDto(this.userRepository.saveAndFlush(userEntityUpdated));
             }
 
+            if(userEntity.getPassword() == null || userEntity.getPassword().isEmpty()) {
+                throw new Exception("UserServiceImpl - create: Password is required");
+            }
+
+            userEntity.setPassword(this.passwordEncoder.encode(userEntity.getPassword()));
             UserEntity userSaved = this.userRepository.save(userEntity);
             return UserMapper.INSTANCE.entityToDto(userSaved);
         } catch (Exception e) {
