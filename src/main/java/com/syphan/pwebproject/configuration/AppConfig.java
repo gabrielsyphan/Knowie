@@ -11,7 +11,7 @@ public class AppConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new SessionInterceptor())
-                .excludePathPatterns("/login", "/erro", "/img/**", "/css/**", "/js/**");
+                .excludePathPatterns("/login", "/erro", "/img/**", "/css/**", "/js/**", "/make-login-develop-test", "/logout");
     }
 
     @Override

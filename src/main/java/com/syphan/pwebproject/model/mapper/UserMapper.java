@@ -14,8 +14,10 @@ public interface UserMapper {
 
     public abstract UserEntity dtoToEntity(UserDto userDto);
 
+    @Mapping(target = "password", ignore = true)
     public abstract UserDto entityToDto(UserEntity user);
 
     @Mapping(target = "id", ignore = true)
+    @Mapping(target = "password", ignore = true)
     public abstract UserEntity updateEntity(UserEntity userEntityOrig, @MappingTarget UserEntity userEntityDest);
 }

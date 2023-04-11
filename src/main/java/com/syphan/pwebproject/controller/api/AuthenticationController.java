@@ -2,6 +2,7 @@ package com.syphan.pwebproject.controller.api;
 
 import com.syphan.pwebproject.model.dto.UserDto;
 import com.syphan.pwebproject.service.user.UserService;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,7 +17,7 @@ public class AuthenticationController {
     @Autowired
     private UserService userService;
 
-    @PostMapping("/login.html")
+    @PostMapping("/login")
     public ResponseEntity<Void> login(@RequestBody UserDto userDto, Model model) {
         UserDto user = this.userService.findByEmailAndPassword(userDto.getEmail(), userDto.getPassword());
         if (user != null) {
@@ -27,12 +28,25 @@ public class AuthenticationController {
         }
     }
 
-    @GetMapping("/user")
+    @GetMapping("/authenticated")
     public ResponseEntity<UserDto> getUser(@ModelAttribute("user") UserDto user) {
         if (user != null) {
             return ResponseEntity.ok(user);
         } else {
             return ResponseEntity.notFound().build();
         }
+    }
+
+    @GetMapping("/logout")
+    public String logout(Model model, HttpSession session) {
+        model.addAttribute("user", null);
+        session.removeAttribute("user");
+        return "redirect:/";
+    }
+
+    @GetMapping("/make-login-develop-test")
+    public String makeLoginDevelopTest(Model model) {
+        model.addAttribute("user", new UserDto());
+        return "redirect:/";
     }
 }
