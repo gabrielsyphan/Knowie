@@ -77,6 +77,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto findByEmailAndPassword(String email, String password) {
-        return this.userRepository.findByEmailAndPassword(email, password).map(UserMapper.INSTANCE::entityToDto).orElse(null);
+        String encodedPassword = BCryptEncoder.encode(password);
+        return this.userRepository.findByEmailAndPassword(email, encodedPassword).map(UserMapper.INSTANCE::entityToDto).orElse(null);
     }
 }

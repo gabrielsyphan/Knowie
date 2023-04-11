@@ -1,14 +1,38 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<link rel="stylesheet" th:href="@{/css/login.css}">
 <head th:replace="~{base :: base-head('Login')}"></head>
 <body>
 <div class="image-background"></div>
-<div class="menu-container">
-    <div class="screen">
-        <div class="container-th">
-            <div class="ui">
-                <p>login page</p>
-                <button type="button" onclick="navigate('make-login-develop-test')">Make login</button>
+<div class="container">
+    <div class="content">
+        <div class="image-box">
+            <img th:src="@{/img/logo.png}" title="Click to return to home page"/>
+        </div>
+        <div class="box">
+            <form class="ui form div-form" onsubmit="submitForm(event, 'login')">
+                <div class="form-control">
+                    <label for="email">Email:</label>
+                    <input id="email" name="email" type="text" placeholder="example@example.com" required>
+                </div>
+
+                <div class="form-control">
+                    <label for="password">Password:</label>
+                    <input id="password" name="password" type="password" placeholder="******" required>
+                </div>
+
+                <div class="button-section">
+                    <div class="left-side">
+                        <input class="remember" type="checkbox" id="remember" name="remember" value="remember">
+                        <label class="remember-label" for="remember">Remember me</label>
+                    </div>
+                    <div class="right-size">
+                        <button type="submit">Submit</button>
+                    </div>
+                </div>
+            </form>
+            <div class="forgot-section" onclick="notImplemented()">
+                <p class="forgot-password">Forgot password?</p>
             </div>
         </div>
     </div>
