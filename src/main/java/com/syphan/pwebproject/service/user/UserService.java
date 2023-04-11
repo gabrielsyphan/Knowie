@@ -4,4 +4,6 @@ import com.syphan.pwebproject.model.dto.UserDto;
 import com.syphan.pwebproject.service.GenericService;
 
 public interface UserService extends GenericService<UserDto> {
+
+    UserDto findByEmailAndPassword(String email, String password);
 }

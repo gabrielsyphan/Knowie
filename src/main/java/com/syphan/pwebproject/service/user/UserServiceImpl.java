@@ -68,4 +68,9 @@ public class UserServiceImpl implements UserService {
                 () -> new RuntimeException("UserServiceImpl - findById: User not found")
         );
     }
+
+    @Override
+    public UserDto findByEmailAndPassword(String email, String password) {
+        return this.userRepository.findByEmailAndPassword(email, password).map(UserMapper.INSTANCE::entityToDto).orElse(null);
+    }
 }

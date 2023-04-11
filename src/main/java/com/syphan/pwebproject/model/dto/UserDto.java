@@ -37,4 +37,6 @@ public class UserDto {
     @NotNull
     @Positive
     private Long userType;
+
+    private String password;
 }

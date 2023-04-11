@@ -24,6 +24,8 @@ public class UserEntity {
 
     private String email;
 
+    private String password;
+
     private Long phone;
 
     private String school;
