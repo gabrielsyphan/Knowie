@@ -16,6 +16,7 @@ You should have Docker compose, Maven and JDK 17 installed on your machine.
 ## API
 * [Application url](http://localhost:2364/api/v1)
 * [Mysql](http://localhost:3306)
+* [Prometheus](http://localhost:9090)
 
 ## Contributors
 * [Gabriel Syphan](https://github.com/gabrielsyphan)

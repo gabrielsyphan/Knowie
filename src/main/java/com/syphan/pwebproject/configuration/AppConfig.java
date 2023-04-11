@@ -12,7 +12,7 @@ public class AppConfig implements WebMvcConfigurer {
     @Override
     public void addInterceptors(InterceptorRegistry registry) {
         registry.addInterceptor(new SessionInterceptor())
-                .excludePathPatterns("/login", PathConstants.LOGIN, "/erro", "/img/**", "/css/**", "/js/**", "/make-login-develop-test", "/logout");
+                .excludePathPatterns("/login", PathConstants.LOGIN, "/actuator/**", "/erro", "/img/**", "/css/**", "/js/**", "/make-login-develop-test", "/logout");
     }
 
     @Override

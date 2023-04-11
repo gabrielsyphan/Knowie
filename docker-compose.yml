@@ -1,0 +1,25 @@
+version: "2.4"
+
+services:
+  mysql-service:
+    image: mysql
+    container_name: mysql-db
+    ports:
+      - "3306:3306"
+    volumes:
+      - database_data:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: ImTheRoot
+
+  prometheus:
+    image: prom/prometheus
+    container_name: prometheus
+    ports:
+      - "9090:9090"
+    volumes:
+      - ./src/main/resources/prometheus.yml:/etc/prometheus/prometheus.yml
+    command:
+      - "--config.file=/etc/prometheus/prometheus.yml"
+
+volumes:
+  database_data:
