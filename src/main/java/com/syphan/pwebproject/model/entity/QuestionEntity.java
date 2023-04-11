@@ -20,20 +20,25 @@ public class QuestionEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Column
     private String name;
 
+    @Column
     private Integer difficulty;
 
     @ElementCollection
     private List<String> tags;
 
+    @Column
     private Integer answerType;
 
     @ElementCollection
     private List<String> answerValues;
 
+    @Column
     private LocalDateTime createdAt;
 
+    @Column
     private LocalDateTime updatedAt;
 
     @ManyToOne

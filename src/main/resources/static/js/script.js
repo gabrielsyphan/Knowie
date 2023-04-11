@@ -31,11 +31,17 @@ function submitForm(e, path) {
             e.target.reset();
             swal("Success!", "Your registration has been recorded.", "success");
             setTimeout(function() {
-                navigate(path);
+                if(path == "login") {
+                    navigate("");
+                } else {
+                    navigate(path);
+                }
             }, 1000);
-        } else {
+        } else if(path == "login") {
+            swal("Error!", "These credentials do not match our records.", "error");
+        }else {
             const response = JSON.parse(xhr.responseText);
-            swal("Error!", "It was not possible to complete your registration. Json: "+ response.message.split(":")[2] , "error");
+            swal("Error!", "It was not possible to complete your registration. "+ response.message.split(":")[2] , "error");
         }
     };
 
@@ -93,10 +99,10 @@ function removeData(id, path) {
 
 function showNav() {
     const menu = document.getElementById("nav");
-    if (menu.style.display === "none") {
-        menu.style.display = "grid";
-    } else {
+    if (menu.style.display === "grid") {
         menu.style.display = "none";
+    } else {
+        menu.style.display = "grid";
     }
 }
 
