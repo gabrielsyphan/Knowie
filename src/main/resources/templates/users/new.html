@@ -31,6 +31,11 @@
                     </div>
 
                     <div class="field">
+                        <label>Password</label>
+                        <input class="ui input" name="password" type="password" placeholder="*******" required>
+                    </div>
+
+                    <div class="field">
                         <label>Phone number</label>
                         <input class="ui input" th:attr="value=${user != null ? user.phone : ''}" name="phone"
                                type="number" placeholder="(00) 0 0000-0000" required>
