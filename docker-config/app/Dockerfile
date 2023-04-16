@@ -13,7 +13,7 @@ COPY . .
 RUN mvn clean package
 
 # Run the application
-CMD ["java", "-jar", "target/devops-project-0.0.1-SNAPSHOT.jar"]
+CMD ["java", "-jar", "target/pweb-project-0.0.1-SNAPSHOT.jar"]
 
 # Expose the application port
 EXPOSE 2364
