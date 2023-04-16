@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="~{base :: base-head('Create new exam')}"></head>
+<body>
+<div class="image-background"></div>
+<div class="menu-container">
+  <div th:replace="~{nav :: menu}"></div>
+  <div class="screen">
+    <div class="container-th">
+      <div class="ui">
+        <button class="button-menu" onclick="showNav()">
+          <i class="align justify icon"></i>
+        </button>
+        <p class="breadcrumb">exams / new</p>
+        <form class="ui form" method="post" onsubmit="submitFormExam(event, 'exams')">
+          <h2>Create new exam</h2>
+          <hr/>
+
+          <input class="ui input" name="id" th:attr="value=${exam != null ? exam.id : ''}" type="hidden"
+                 readonly>
+
+          <div class="field">
+              <label for="title">Title</label>
+              <input id="title" class="ui input" placeholder="Math exam 2020" name="title" th:attr="value=${exam != null ? exam.title : ''}" type="text"
+                     required>
+          </div>
+
+            <div class="field">
+                <label for="startDateTime">Start date and time</label>
+                <input id="startDateTime" class="ui input" name="startDateTime" th:attr="value=${exam != null ? exam.startDateTime : ''}" type="datetime-local"
+                       required>
+            </div>
+
+            <div class="field">
+                <label for="endDateTime">End date and time</label>
+                <input id="endDateTime" class="ui input" name="endDateTime" th:attr="value=${exam != null ? exam.endDateTime : ''}" type="datetime-local"
+                       required>
+            </div>
+
+            <div class="field">
+                <label for="duration">Duration in minutes</label>
+                <input id="duration" class="ui input" placeholder="120 minutes" name="duration" th:attr="value=${exam != null ? exam.duration : ''}" type="number"
+                       required>
+            </div>
+
+            <div class="field">
+                <label for="questionSearch">Questions</label>
+                <table class="ui celled table">
+                    <thead>
+                    <tr>
+                        <th>Question</th>
+                        <th>Answer Type</th>
+                    </tr>
+                    </thead>
+                    <tbody id="selectedQuestionsTableBody">
+                    </tbody>
+                </table>
+
+                <div class="ui action input">
+                    <input id="questionSearch" class="ui input input-search" placeholder="What is the difference between and an object in java?" type="text">
+                    <button class="ui teal right labeled icon button btn-ipt-add" onclick="searchAllQuestions()" type="button">
+                        <i class="search icon"></i>
+                        Search all
+                    </button>
+                </div>
+            </div>
+
+            <div id="results"></div>
+
+          <div class="mt-3">
+            <button class="ui button button-reset" type="button" onclick="navigate('exams')">Return</button>
+            <button class="ui button button-submit" type="submit">Submit</button>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+<script th:inline="javascript">
+    const questions = [[${questions} != null ? ${questions} : '']];
+    const selectedQuestions = [];
+
+    function addQuestion(questionId, questionName, answerType) {
+      const questionIndex = questions.findIndex(q => q.id === questionId);
+      if (questionIndex !== -1) {
+        const question = questions[questionIndex];
+        selectedQuestions.push({ id: questionId, name: questionName, answerType: answerType });
+
+        questions.splice(questionIndex, 1);
+        const selectedQuestionsJson = JSON.stringify(selectedQuestions);
+        searchQuestions(questionSearch.value.toLowerCase());
+
+          // Add selected question to the table
+          const selectedQuestionsTableBody = document.getElementById("selectedQuestionsTableBody");
+          const row = selectedQuestionsTableBody.insertRow(-1);
+          const questionNameCell = row.insertCell(0);
+          questionNameCell.innerHTML = question.name;
+          const answerTypeCell = row.insertCell(1);
+          answerTypeCell.innerHTML = question.answerType;
+
+          questionSearch.value = '';
+          resultsDiv.innerHTML = "";
+      }
+    }
+
+    const questionSearch = document.getElementById("questionSearch");
+    const resultsDiv = document.getElementById("results");
+
+    function renderQuestions(questions) {
+      resultsDiv.innerHTML = "";
+      questions.forEach(question => {
+        const questionInput = document.createElement("input");
+        questionInput.classList.add("ui", "input", "mb-3", "pointer");
+        questionInput.value = question.name;
+        questionInput.readOnly = true;
+        questionInput.addEventListener("click", () => {
+          addQuestion(question.id, question.name, question.answerType);
+        });
+
+        const questionDiv = document.createElement("div");
+        questionDiv.classList.add("questionAvailable");
+        questionDiv.appendChild(questionInput);
+        resultsDiv.appendChild(questionDiv);
+      });
+    }
+
+    function searchQuestions(searchValue) {
+      const matchingQuestions = questions.filter(question => {
+        return question.name.toLowerCase().includes(searchValue.toLowerCase());
+      });
+      renderQuestions(matchingQuestions);
+    }
+
+    questionSearch.addEventListener("input", event => {
+      const searchValue = event.target.value;
+      if (searchValue === "") {
+        resultsDiv.innerHTML = "";
+      } else {
+        searchQuestions(searchValue);
+      }
+    });
+
+    function searchAllQuestions() {
+        renderQuestions(questions);
+    }
+
+function submitFormExam(e, path) {
+    e.preventDefault();
+
+    const xhr = new XMLHttpRequest();
+    xhr.onreadystatechange = function() {
+        if (xhr.readyState === 4) {
+            const response = JSON.parse(xhr.responseText);
+
+            if (xhr.status >= 200 && xhr.status < 300) {
+                swal({
+                    title: "Success!",
+                    text: "Your registration has been recorded.",
+                    icon: "success"
+                }).then((okay) => {
+                    navigate(path);
+                });
+            } else {
+                swal("Error!", "It was not possible to complete your request. "+ response.message.split(":")[2], "error");
+            }
+        }
+    };
+
+    xhr.open("PUT", "/api/v1/"+ path, true);
+    xhr.setRequestHeader("Content-Type", "application/json");
+
+    const formData = new FormData(e.target);
+    const data = {};
+    for (const [key, value] of formData.entries()) {
+      data[key] = value;
+    }
+
+       data["questions"] = selectedQuestions;
+
+    xhr.send(JSON.stringify(data));
+}
+</script>
+<script th:replace="~{base :: base-script}"></script>
+</body>
+</html>

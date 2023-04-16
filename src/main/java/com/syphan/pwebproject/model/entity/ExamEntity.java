@@ -1,40 +1,39 @@
 package com.syphan.pwebproject.model.entity;
 
+import com.syphan.pwebproject.model.dto.QuestionDto;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Entity
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserEntity {
+public class ExamEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     @Column
-    private String name;
-
-    @Column(unique = true)
-    private String email;
+    private String title;
 
     @Column
-    private String password;
-    
-    @Column
-    private Long phone;
+    private LocalDateTime startDateTime;
 
     @Column
-    private String school;
+    private LocalDateTime endDateTime;
 
     @Column
-    private Long userType;
+    private Long duration;
 
     @Column
-    private boolean firstAccess;
+    @ManyToMany
+    private List<QuestionEntity> questions;
 }

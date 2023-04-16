@@ -2,11 +2,101 @@ let tags = window.tagsList || [];
 let answerValues = {};
 let answerCount = 0;
 
+window.onload = function() {
+    let path = window.location.pathname.split("/");
+    path = path[path.length - 1];
+
+    if(path == "login") {
+        localStorage.removeItem("user");
+    }
+
+    if(localStorage.getItem("user") !== null && JSON.parse(localStorage.getItem("user")).firstAccess){
+       swal({
+         text: "Update your password",
+         content: "input",
+         button: {
+           text: "Update",
+           closeModal: false,
+         },
+       }).then(pass => {
+          const xhr = new XMLHttpRequest();
+          xhr.onreadystatechange = function() {
+             if (xhr.readyState === 4) {
+                if (xhr.status >= 200 && xhr.status <= 300) {
+                   const user = JSON.parse(localStorage.getItem("user"));
+                   user.firstAccess = false;
+                   localStorage.setItem("user", JSON.stringify(user));
+
+                   swal({
+                       title: "Success!",
+                       text: "Your password has been updated.",
+                       icon: "success"
+                   }).then((okay) => {
+                       navigate("");
+                   });
+                } else {
+                   swal("Error!", "It was not possible to complete your registration.", "error");
+                }
+              }
+            };
+
+          const data = {
+            id: localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")).id : null,
+            password: pass,
+          };
+
+          xhr.open("PUT", "/api/v1/reset-password", true);
+          xhr.setRequestHeader("Content-Type", "application/json");
+          xhr.send(JSON.stringify(data));
+       });
+    }
+}
+
+function forgotPassword() {
+   swal({
+     text: "Enter your email to reset your password",
+     content: "input",
+     button: {
+       text: "Update",
+       closeModal: false,
+     },
+   }).then(email => {
+       if(email) {
+           const xhr = new XMLHttpRequest();
+           xhr.onreadystatechange = function() {
+                if (xhr.readyState === 4) {
+                   if (xhr.status >= 200 && xhr.status <= 300) {
+                        const response = JSON.parse(xhr.responseText);
+                        swal({
+                            title: "Success!",
+                            text: "Your new passowrd is:   "+ response.password,
+                            icon: "success"
+                        }).then((okay) => {
+                            navigate("login");
+                        });
+                   } else {
+                       swal("Error!", "It was not possible to complete your request. Please, check if the email is correct or try again later.", "error");
+                   }
+               }
+           };
+
+           const data = {
+               email: email
+           };
+
+           xhr.open("PUT", "/api/v1/forgot-password", true);
+           xhr.setRequestHeader("Content-Type", "application/json");
+           xhr.send(JSON.stringify(data));
+       }
+   });
+}
+
 function navigate(route) {
     window.location.href = window.location.origin + "/" + route;
 }
 
 function search(e) {
+    alert(userName);
     const key=e.keyCode || e.which;
     if(key == 13){
         const searchValue = document.getElementById("search").value;
@@ -27,21 +117,37 @@ function submitForm(e, path) {
 
     const xhr = new XMLHttpRequest();
     xhr.onreadystatechange = function() {
-        if (xhr.status >= 200 && xhr.status < 300) {
-            e.target.reset();
-            swal("Success!", "Your registration has been recorded.", "success");
-            setTimeout(function() {
-                if(path == "login") {
-                    navigate("");
-                } else {
-                    navigate(path);
-                }
-            }, 1000);
-        } else if(path == "login") {
-            swal("Error!", "These credentials do not match our records.", "error");
-        }else {
+        if (xhr.readyState === 4) {
+            if (!xhr.responseText && path == "login") {
+                swal("Error!", "These credentials do not match our records.", "error");
+            }
+
             const response = JSON.parse(xhr.responseText);
-            swal("Error!", "It was not possible to complete your registration. "+ response.message.split(":")[2] , "error");
+
+            if (xhr.status >= 200 && xhr.status < 300) {
+                if(path == "login") {
+                    localStorage.setItem("user", JSON.stringify(response));
+                    navigate("");
+                } else if(path == "users") {
+                    swal({
+                        title: "Success!",
+                        text: "The user password is:   "+ response.password,
+                        icon: "success"
+                    }).then((okay) => {
+                        navigate(path);
+                    });
+                } else {
+                    swal({
+                        title: "Success!",
+                        text: "Your registration has been recorded.",
+                        icon: "success"
+                    }).then((okay) => {
+                        navigate(path);
+                    });
+                }
+            } else {
+                swal("Error!", "It was not possible to complete your request. "+ response.message.split(":")[2], "error");
+            }
         }
     };
 
@@ -63,6 +169,10 @@ function submitForm(e, path) {
             answerValues.option4
         ];
     }
+
+   if (path == "exams") {
+       data["questions"] = selectedQuestions;
+   }
 
     xhr.send(JSON.stringify(data));
 }

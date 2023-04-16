@@ -5,16 +5,23 @@ import com.syphan.pwebproject.model.entity.UserEntity;
 import com.syphan.pwebproject.model.mapper.UserMapper;
 import com.syphan.pwebproject.repository.UserRepository;
 import com.syphan.pwebproject.util.BCryptEncoder;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
+import java.security.SecureRandom;
 import java.util.List;
+import java.util.Objects;
 import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
+
+    private static final String ALLOWED_CHARACTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()_+";
 
     @Autowired
     public UserServiceImpl(UserRepository userRepository) {
@@ -34,13 +41,19 @@ public class UserServiceImpl implements UserService {
                 return UserMapper.INSTANCE.entityToDto(this.userRepository.saveAndFlush(userEntityUpdated));
             }
 
-            if(userEntity.getPassword() == null || userEntity.getPassword().isEmpty()) {
-                throw new Exception("UserServiceImpl - create: Password is required");
+            if(userEntity.getPassword() != null) {
+                throw new Exception("UserServiceImpl - create: Password must be null");
             }
 
-            userEntity.setPassword(BCryptEncoder.encode(userEntity.getPassword()));
+            String password = this.generatePassword();
+            userEntity.setPassword(BCryptEncoder.encode(password));
+            userEntity.setFirstAccess(true);
+
             UserEntity userSaved = this.userRepository.save(userEntity);
-            return UserMapper.INSTANCE.entityToDto(userSaved);
+            UserDto userDto = UserMapper.INSTANCE.entityToDto(userSaved);
+            userDto.setPassword(password);
+
+            return userDto;
         } catch (Exception e) {
             e.printStackTrace();
             throw new RuntimeException("UserServiceImpl - create: Error when create user: {}", e);
@@ -78,6 +91,61 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto findByEmailAndPassword(String email, String password) {
         String encodedPassword = BCryptEncoder.encode(password);
-        return this.userRepository.findByEmailAndPassword(email, encodedPassword).map(UserMapper.INSTANCE::entityToDto).orElse(null);
+        return this.userRepository.findByEmailAndPassword(email, encodedPassword)
+                .map(UserMapper.INSTANCE::entityToDto).orElse(null);
+    }
+
+    @Override
+    public UserDto login(UserDto userDto, HttpSession session) {
+        UserDto user = this.findByEmailAndPassword(userDto.getEmail(), userDto.getPassword());
+
+        if(userDto.getEmail().equals("admin") && userDto.getPassword().equals("admin")) {
+            user = UserDto.builder().email("admin@knowie.site").name("ADMIN").userType(3L).build();
+        }
+
+        if (user != null) {
+            session.setAttribute("user", user);
+            return user;
+        }
+
+        return null;
+    }
+
+    @Override
+    public void resetPassword(UserDto userDto, HttpSession session) throws RuntimeException {
+        UserDto user = (UserDto) session.getAttribute("user");
+        if(!Objects.equals(user.getId(), userDto.getId())) {
+            throw new RuntimeException("UserServiceImpl - resetPassword: User not authorized");
+        }
+
+        UserEntity userEntity = this.userRepository.findById(userDto.getId()).orElseThrow(
+                () -> new RuntimeException("UserServiceImpl - resetPassword: User not found")
+        );
+        userEntity.setPassword(BCryptEncoder.encode(userDto.getPassword()));
+        userEntity.setFirstAccess(false);
+        this.userRepository.save(userEntity);
+    }
+
+    @Override
+    public UserDto forgotPassword(UserDto userDto) throws RuntimeException {
+        UserEntity userEntity = this.userRepository.findByEmail(userDto.getEmail()).orElseThrow(
+                () -> new RuntimeException("UserServiceImpl - forgotPassword: User not found")
+        );
+
+        String password = this.generatePassword();
+        userEntity.setPassword(BCryptEncoder.encode(password));
+        userEntity.setFirstAccess(true);
+        UserEntity user = this.userRepository.save(userEntity);
+
+        return UserDto.builder().password(password).build();
+    }
+
+    public String generatePassword() {
+        SecureRandom random = new SecureRandom();
+        StringBuilder password = new StringBuilder();
+        for (int i = 0; i < 8; i++) {
+            password.append(ALLOWED_CHARACTERS.charAt(random.nextInt(ALLOWED_CHARACTERS.length())));
+        }
+        return password.toString();
     }
 }

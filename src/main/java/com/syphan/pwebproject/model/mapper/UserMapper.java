@@ -19,5 +19,6 @@ public interface UserMapper {
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "password", ignore = true)
+    @Mapping(target = "firstAccess", ignore = true)
     public abstract UserEntity updateEntity(UserEntity userEntityOrig, @MappingTarget UserEntity userEntityDest);
 }

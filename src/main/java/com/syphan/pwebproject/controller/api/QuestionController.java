@@ -58,7 +58,7 @@ public class QuestionController {
         return ResponseEntity.created(uri).body(createdQuestion);
     }
 
-    @DeleteMapping(value = PathConstants.QUESTIONS + "/{id}")
+    @DeleteMapping(PathConstants.QUESTIONS + "/{id}")
     public ResponseEntity<Void> deleteQuestion(@PathVariable("id") long id) {
         log.info("QuestionController - deleteQuestion: Delete question with id: {}", id);
         this.questionService.delete(id);

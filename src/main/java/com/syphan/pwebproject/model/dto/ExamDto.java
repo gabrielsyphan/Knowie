@@ -1,6 +1,5 @@
 package com.syphan.pwebproject.model.dto;
 
-import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotEmpty;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.Positive;
@@ -9,36 +8,32 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.time.LocalDateTime;
+import java.util.List;
+
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class UserDto {
+public class ExamDto {
 
     private Long id;
 
     @NotNull
     @NotEmpty
-    private String name;
+    private String title;
 
     @NotNull
-    @NotEmpty
-    @Email
-    private String email;
+    private LocalDateTime startDateTime;
 
     @NotNull
-    @Positive
-    private Long phone;
-
-    @NotNull
-    @NotEmpty
-    private String school;
+    private LocalDateTime endDateTime;
 
     @NotNull
     @Positive
-    private Long userType;
+    private Long duration;
 
-    private String password;
-
-    private boolean firstAccess;
+    @NotNull
+    @NotEmpty
+    private List<QuestionDto> questions;
 }

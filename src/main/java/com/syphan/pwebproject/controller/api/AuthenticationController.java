@@ -11,6 +11,8 @@ import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.Objects;
+
 @Controller
 @SessionAttributes("user")
 public class AuthenticationController {
@@ -19,18 +21,33 @@ public class AuthenticationController {
     private UserService userService;
 
     @PutMapping(value = PathConstants.LOGIN, consumes = "application/json", produces = "application/json")
-    public ResponseEntity<Void> login(@RequestBody UserDto userDto, Model model, HttpSession session) {
-        UserDto user = this.userService.findByEmailAndPassword(userDto.getEmail(), userDto.getPassword());
+    public ResponseEntity<UserDto> login(@RequestBody UserDto userDto, HttpSession session) {
+        UserDto user = this.userService.login(userDto, session);
 
-        if(userDto.getEmail().equals("admin") && userDto.getPassword().equals("admin")) {
-            user = UserDto.builder().email("admin@knowie.site").name("ADMIN").build();
+        if(user != null) {
+            return new ResponseEntity<>(user, HttpStatus.OK);
         }
 
-        if (user != null) {
-            session.setAttribute("user", user);
-            return ResponseEntity.ok().build();
-        } else {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+        return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+    }
+
+    @PutMapping(value = PathConstants.RESET_PASSWORD, consumes = "application/json", produces = "application/json")
+    public ResponseEntity<Void> resetPassword(@RequestBody UserDto userDto, HttpSession session) {
+        try {
+            this.userService.resetPassword(userDto, session);
+            return ResponseEntity.noContent().build();
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
+        }
+    }
+
+    @PutMapping(value = PathConstants.FORGOT_PASSWORD, consumes = "application/json", produces = "application/json")
+    public ResponseEntity<UserDto> forgotPassword(@RequestBody UserDto userDto) {
+        try {
+            UserDto user = this.userService.forgotPassword(userDto);
+            return new ResponseEntity<>(user, HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>(HttpStatus.UNAUTHORIZED);
         }
     }
 

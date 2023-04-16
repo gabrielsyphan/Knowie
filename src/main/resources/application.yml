@@ -8,7 +8,7 @@ spring:
   datasource:
     url: jdbc:mysql://localhost:3306/knowie?createDatabaseIfNotExist=true
     username: root
-    password: ImTheRoot
+    password: root
   jpa:
     hibernate:
       ddl-auto: update

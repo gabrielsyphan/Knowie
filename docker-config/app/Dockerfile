@@ -3,14 +3,14 @@
 FROM maven:3.9-amazoncorretto-17
 
 # Set the working directory
-ENV APP_HOME /app
+ENV APP_HOME /
 WORKDIR $APP_HOME
 
 # Copy the source code
 COPY . .
 
 # Build the application
- RUN mvn clean package
+RUN mvn clean package
 
 # Run the application
 CMD ["java", "-jar", "target/devops-project-0.0.1-SNAPSHOT.jar"]

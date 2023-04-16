@@ -1,25 +1,44 @@
-version: "2.4"
+version: "3.7"
 
 services:
   mysql-service:
-    image: mysql
-    container_name: mysql-db
+    build:
+      context: .
+      dockerfile: ./docker-config/db/Dockerfile
+    container_name: ${MYSQL_HOST}
     ports:
       - "3306:3306"
     volumes:
       - database_data:/var/lib/mysql
+    secrets:
+      - mysql-secret
     environment:
-      MYSQL_ROOT_PASSWORD: ImTheRoot
+      MYSQL_ROOT_PASSWORD: /run/secrets/mysql_secret
+    networks:
+      - devopsnetwork
 
-  prometheus:
-    image: prom/prometheus
-    container_name: prometheus
+  spring-service:
+    build:
+      context: .
+      dockerfile: ./docker-config/app/Dockerfile
+    container_name: springboot-devops
+    secrets:
+      - mysql-secret
+    env_file:
+      - .env
+    depends_on:
+      - mysql-service
     ports:
-      - "9090:9090"
-    volumes:
-      - ./src/main/resources/prometheus.yml:/etc/prometheus/prometheus.yml
-    command:
-      - "--config.file=/etc/prometheus/prometheus.yml"
+      - "${APP_PORT}:8080"
+    networks:
+      - devopsnetwork
+
+secrets:
+  mysql-secret:
+    file: ./mysql-secret.txt
+
+networks:
+  devopsnetwork:
 
 volumes:
   database_data:

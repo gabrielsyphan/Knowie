@@ -1,12 +1,10 @@
 package com.syphan.pwebproject.configuration;
 
+import com.syphan.pwebproject.model.dto.UserDto;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.web.servlet.HandlerInterceptor;
-
-import java.util.Arrays;
-import java.util.List;
 
 public class SessionInterceptor implements HandlerInterceptor {
 
@@ -20,9 +18,20 @@ public class SessionInterceptor implements HandlerInterceptor {
                 return false;
             }
         }
-
-        if (session.getAttribute("user") == null) {
+        if (session == null || session.getAttribute("user") == null) {
             response.sendRedirect("/login");
+            return false;
+        }
+
+        UserDto user = (UserDto) session.getAttribute("user");
+
+        if (user.getUserType() != 3 && request.getRequestURI().matches("^/users.*$")) {
+            response.sendRedirect("/");
+            return false;
+        }
+
+        if(user.getUserType() == 1 && (request.getRequestURI().matches("^/questions.*$") || request.getRequestURI().equals("/exams/new"))) {
+            response.sendRedirect("/");
             return false;
         }
 

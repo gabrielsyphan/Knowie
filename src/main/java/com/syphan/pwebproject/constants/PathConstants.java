@@ -10,7 +10,13 @@ public class PathConstants {
 
     public static final String QUESTIONS = BASE_PATH + "/questions";
 
+    public static final String ANSWERS = BASE_PATH + "/answers";
+
     public static final String USERS = BASE_PATH + "/users";
 
     public static final String LOGIN = BASE_PATH + "/login";
+
+    public static final String RESET_PASSWORD = BASE_PATH + "/reset-password";
+
+    public static final String FORGOT_PASSWORD = BASE_PATH + "/forgot-password";
 }

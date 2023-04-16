@@ -1,7 +1,6 @@
 package com.syphan.pwebproject.service.question;
 
 import com.syphan.pwebproject.model.dto.QuestionDto;
-import com.syphan.pwebproject.model.dto.UserDto;
 import com.syphan.pwebproject.model.entity.QuestionEntity;
 import com.syphan.pwebproject.model.entity.UserEntity;
 import com.syphan.pwebproject.model.mapper.QuestionMapper;
@@ -29,10 +28,10 @@ public class QuestionServiceImpl implements QuestionService {
             QuestionEntity questionEntity = QuestionMapper.INSTANCE.dtoToEntity(obj);
 
             if(questionEntity.getId() != null) {
-                QuestionEntity userEntityFound = this.questionRepository.findById(questionEntity.getId()).orElseThrow(
+                QuestionEntity questionEntityFound = this.questionRepository.findById(questionEntity.getId()).orElseThrow(
                         () -> new Exception("QuestionServiceImpl - create/update: Question not found")
                 );
-                QuestionEntity questionEntityUpdated = QuestionMapper.INSTANCE.updateEntity(questionEntity, userEntityFound);
+                QuestionEntity questionEntityUpdated = QuestionMapper.INSTANCE.updateEntity(questionEntity, questionEntityFound);
                 questionEntityUpdated.setUpdatedAt(LocalDateTime.now());
                 return QuestionMapper.INSTANCE.entityToDto(this.questionRepository.saveAndFlush(questionEntityUpdated));
             }

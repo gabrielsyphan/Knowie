@@ -20,7 +20,8 @@
                         <h2>Welcome to Knowie!</h2>
                         <p>Knowie is an online platform which allows professors to <br>
                             conveniently create, share, administer, and evaluate exams.</p>
-                        <button class="btn-new mt-3">Register a new exam</button>
+                        <button th:if="${session.user.userType == 2 || session.user.userType == 3}" class="btn-new mt-3" onclick="navigate('exams/new')">Register a new exam</button>
+                        <button th:if="${session.user.userType == 1}" class="btn-new mt-3" onclick="navigate('exams')">Check your exams</button>
                     </div>
                 </div>
             </div>

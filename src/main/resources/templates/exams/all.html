@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="~{base :: base-head('Exam list')}"></head>
+<body>
+<div class="image-background"></div>
+<div class="menu-container">
+  <div th:replace="~{nav :: menu}"></div>
+  <div class="screen">
+    <div class="container-th">
+      <div class="ui">
+        <p class="breadcrumb">exams / all</p>
+        <button class="button-menu" onclick="showNav()">
+          <i class="align justify icon"></i>
+        </button>
+        <h2>List of all exams</h2>
+        <hr/>
+        <button th:if="${session.user.userType == 2 || session.user.userType == 3}" class="btn-new mt-3 button-submit" onclick="navigate('exams/new')">Create a new exam
+        </button>
+        <div class="d-flex ui cards mt-3">
+          <div class="user-card ui card" th:each="exam : ${exams}">
+            <button class="button-edit" th:onclick="notImplemented()">
+              <i class="edit icon"></i>
+            </button>
+
+            <label class="strong">Title:</label>
+            <p th:text="${exam.title}"></p>
+
+            <label class="strong">Start date and time:</label>
+            <p th:text="${exam.startDateTime}"></p>
+
+            <label class="strong">End date and time:</label>
+            <p th:text="${exam.endDateTime}"></p>
+
+            <label class="strong">Duration:</label>
+            <p th:text="${exam.duration}"></p>
+
+            <div class="div-btn mt-2">
+              <button class="ui button btn-remove" th:onclick="removeData([[${exam.id}]], 'exams')">Remove</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script th:replace="~{base :: base-script}"></script>
+</body>
+</html>

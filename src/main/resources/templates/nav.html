@@ -16,12 +16,12 @@
             <span>Home</span>
         </div>
 
-        <div class="menu-box" th:classappend="${route} == 'exams' ? 'active'" onclick="notImplemented()">
+        <div class="menu-box" th:classappend="${route} == 'exams' ? 'active'" onclick="navigate('exams')">
             <i class="clipboard icon"></i>
             <span>Exams</span>
         </div>
 
-        <div class="menu-box" th:classappend="${route} == 'questions' ? 'active'" onclick="navigate('questions')">
+        <div th:if="${session.user.userType == 2 || session.user.userType == 3}" class="menu-box" th:classappend="${route} == 'questions' ? 'active'" onclick="navigate('questions')">
             <i class="tasks icon"></i>
             <span>Questions</span>
         </div>
@@ -31,7 +31,7 @@
             <span>Answers</span>
         </div>
 
-        <div class="menu-box" th:classappend="${route} == 'users' ? 'active'" onclick="navigate('users')">
+        <div th:if="${session.user.userType == 3}" class="menu-box" th:classappend="${route} == 'users' ? 'active'" onclick="navigate('users')">
             <i class="users icon"></i>
             <span>Users</span>
         </div>
@@ -45,7 +45,7 @@
     <div class="nav-footer">
         <div>
             <img class="img-picture" th:src="@{/img/picture.svg}" />
-            <span class="user-name-profile-menu">ADMIN</span>
+            <span class="user-name-profile-menu" th:text="${session.user.name}"></span>
         </div>
     </div>
 </div>
