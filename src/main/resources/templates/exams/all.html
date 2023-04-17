@@ -13,32 +13,56 @@
           <i class="align justify icon"></i>
         </button>
         <h2>List of all exams</h2>
-        <hr/>
-        <button th:if="${session.user.userType == 2 || session.user.userType == 3}" class="btn-new mt-3 button-submit" onclick="navigate('exams/new')">Create a new exam
-        </button>
-        <div class="d-flex ui cards mt-3">
-          <div class="user-card ui card" th:each="exam : ${exams}">
-            <button class="button-edit" th:onclick="notImplemented()">
-              <i class="edit icon"></i>
-            </button>
-
-            <label class="strong">Title:</label>
-            <p th:text="${exam.title}"></p>
-
-            <label class="strong">Start date and time:</label>
-            <p th:text="${exam.startDateTime}"></p>
-
-            <label class="strong">End date and time:</label>
-            <p th:text="${exam.endDateTime}"></p>
-
-            <label class="strong">Duration:</label>
-            <p th:text="${exam.duration}"></p>
-
-            <div class="div-btn mt-2">
-              <button class="ui button btn-remove" th:onclick="removeData([[${exam.id}]], 'exams')">Remove</button>
+        <div class="welcome-card" th:if="${exams.size() == 0}" >
+          <div class="w-100 t-center mtn-300">
+            <div class="t-center">
+              <img class="vector-home" th:src="@{/img/empty.svg}">
             </div>
+            <h2>Nothing to see here :(</h2>
+            <p>There are no exams registered in the system.</p>
+            <button th:if="${session.user.userType == 2 || session.user.userType == 3}" class="btn-new mt-3" onclick="navigate('exams/new')">Register a new exam</button>
           </div>
         </div>
+        <table class="ui compact celled definition table"  th:if="${exams.size() > 0 && (session.user.userType == 2 || session.user.userType == 3)}">
+          <thead class="full-width">
+          <tr>
+            <th></th>
+            <th>Title</th>
+            <th>Start date and time</th>
+            <th>End date and time</th>
+            <th>Duration</th>
+          </tr>
+          </thead>
+          <tbody>
+          <tr th:each="exam : ${exams}">
+            <td class="collapsing">
+              <div class="ui fitted slider checkbox t-center">
+                <button class="button-check" th:onclick="navigate('exams/' + [[${exam.id}]])">
+                  <i class="eye icon"></i>
+                </button>
+
+                <button class="button-check" th:onclick="removeData([[${exam.id}]], 'exams')">
+                  <i class="trash icon"></i>
+                </button>
+              </div>
+            </td>
+            <td th:text="${exam.title}"></td>
+            <td th:text="${exam.startDateTime}"></td>
+            <td th:text="${exam.endDateTime}"></td>
+            <td th:text="${exam.duration}"></td>
+          </tr>
+          </tbody>
+          <tfoot class="full-width">
+          <tr>
+            <th></th>
+            <th colspan="4">
+              <div class="ui teal right floated labeled icon button btn-ipt-add" onclick="navigate('exams/new')">
+                <i class="clipboard icon"></i> Create new Exam
+              </div>
+            </th>
+          </tr>
+          </tfoot>
+        </table>
       </div>
     </div>
   </div>

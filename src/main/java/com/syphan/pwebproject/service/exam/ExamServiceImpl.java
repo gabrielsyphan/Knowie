@@ -30,6 +30,10 @@ public class ExamServiceImpl implements ExamService {
         try {
             ExamEntity examEntity = ExamMapper.INSTANCE.dtoToEntity(obj);
 
+            if(obj.getQuestions().size() == 0) {
+                throw new Exception("ExamServiceImpl - create: Exam must have at least 1 question");
+            }
+
             List<QuestionEntity> questionEntities = obj.getQuestions().stream().map(questionDto -> {
                 return this.questionRepository.findById(questionDto.getId()).orElseThrow(
                         () -> new RuntimeException("ExamServiceImpl - create: Question not found")

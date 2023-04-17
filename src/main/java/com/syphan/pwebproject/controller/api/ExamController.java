@@ -40,11 +40,19 @@ public class ExamController {
         return "exams/all";
     }
 
+    @GetMapping("/exams/{id}")
+    public String getExamById(@PathVariable("id") long id, Model model) {
+        log.info("ExamController - getExamById: Get exam with id: {}", id);
+        ExamDto examDto = this.examService.findById(id);
+        model.addAttribute("exam", examDto);
+        model.addAttribute("route", "exams");
+        return "exams/details";
+    }
+
     @GetMapping("/exams/new")
     public String newExam(Model model) {
-        log.info("ExamController - newQuestion: New exam");
+        log.info("ExamController - newExam: New exam");
         List<QuestionDto> questionDtoList = this.questionService.findAll();
-
         model.addAttribute("route", "exams");
         model.addAttribute("questions", questionDtoList.stream().peek(questionDto -> questionDto.setUser(null)).toList());
         return "exams/new";

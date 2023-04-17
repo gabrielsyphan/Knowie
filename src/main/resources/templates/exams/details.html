@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="~{base :: base-head('Create new exam')}"></head>
+<body>
+<div class="image-background"></div>
+<div class="menu-container">
+  <div th:replace="~{nav :: menu}"></div>
+  <div class="screen">
+    <div class="container-th">
+      <div class="ui">
+        <button class="button-menu" onclick="showNav()">
+          <i class="align justify icon"></i>
+        </button>
+        <p class="breadcrumb">exams / details</p>
+        <div class="ui">
+          <h2 th:text="${exam.title}"></h2>
+          <div class="ui cards mt-3">
+            <div class="ui card exam-question-card" th:each="question : ${exam.questions}">
+              <h4 th:text="${question.name}"></h4>
+              <div class="field" th:switch="${question.answerType}">
+                <textarea th:case="1" class="ui input" name="answer" type="text" placeholder="Your answer" required></textarea>
+                <div th:case="2">
+                  <div class="w-100" th:each="answerValue : ${question.answerValues}">
+                    <input class="exam-question-checkbox" type="checkbox" name="answer" value="1">
+                    <span class="span-checkbox" th:text="${answerValue}"></span>
+                  </div>
+                </div>
+                <div th:case="3">
+                  <div class="w-100" th:each="answerValue : ${question.answerValues}">
+                    <input class="exam-question-checkbox" type="checkbox" name="answer" value="1">
+                    <span class="span-checkbox" th:text="${answerValue}"></span>
+                  </div>
+                </div>
+                <div th:case="4">
+                  <div class="w-100">
+                    <input class="exam-question-checkbox" type="checkbox" name="answer" value="1">
+                    <span class="span-checkbox">True</span>
+                  </div>
+                  <div class="w-100">
+                    <input class="exam-question-checkbox" type="checkbox" name="answer" value="2">
+                    <span class="span-checkbox">False</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<script th:replace="~{base :: base-script}"></script>
+</body>
+</html>

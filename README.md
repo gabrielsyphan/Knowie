@@ -8,14 +8,11 @@ This is an online school exam project created to PWEB class at Federal Institute
 ## Configuration
 You should have Docker compose, Maven and JDK 17 installed on your machine.
 
-* At first, you should create a docker network. Run `docker network create knowienetwork` on your CMD.
-* On root folder, run `docker build -t mysql-knowie -f ./docker-config/db/Dockerfile .` to build the database image.
-* In sequel, on root folder, run `docker build -t springboot-knowie -f ./docker-config/app/Dockerfile .` to build the application image.
-* After all, run `docker run -p 10000:3306 --network knowienetwork --name mysql mysql-knowie` and than `docker run -p 9000:8080 --network knowienetwork --name springboot --env-file .env springboot-knowie`
+* On root folder, run `docker compose up -d` to build the and run the project.
 * You can make login as ADMIN using the follow credentials: email: admin, password: admin
 
 ## API
-* [Application url](http://localhost:2364/api/v1)
+* [Application url](http://localhost:8080/api/v1)
 * [Mysql](http://localhost:3306)
 * [Prometheus](http://localhost:9090)
 

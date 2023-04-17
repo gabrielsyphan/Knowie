@@ -161,7 +161,7 @@ function submitFormExam(e, path) {
                     navigate(path);
                 });
             } else {
-                swal("Error!", "It was not possible to complete your request. "+ response.message.split(":")[2], "error");
+                swal("Error!", "It was not possible to complete your request. "+ response.errors[0].field + " " + response.errors[0].defaultMessage, "error");
             }
         }
     };
