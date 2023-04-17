@@ -245,6 +245,10 @@ p {
     text-align: center;
 }
 
+.ui.cards>.card {
+    height: fit-content !important;
+}
+
 .welcome-card {
     display: flex;
     justify-content: center;

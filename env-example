@@ -1,6 +1,5 @@
-MYSQL_HOST=mysql
 MYSQL_PORT=3306
-MYSQL_DATABASE=devops_project
-MYSQL_USER=root
-MYSQL_PASSWORD=root
-APP_NAME=devops_project
+MYSQL_DATABASE=knowie-db
+MYSQL_USER=yourdbuser
+MYSQL_PASSWORD=yourdbpassword
+APP_NAME=knowie
