@@ -19,23 +19,24 @@
               <img class="vector-home" th:src="@{/img/empty.svg}">
             </div>
             <h2>Nothing to see here :(</h2>
-            <p>There are no exams registered in the system.</p>
+            <p>There are no exams registered.</p>
             <button th:if="${session.user.userType == 2 || session.user.userType == 3}" class="btn-new mt-3" onclick="navigate('exams/new')">Register a new exam</button>
           </div>
         </div>
-        <table class="ui compact celled definition table"  th:if="${exams.size() > 0 && (session.user.userType == 2 || session.user.userType == 3)}">
+        <table class="ui compact celled definition table"  th:if="${exams.size() > 0}">
           <thead class="full-width">
           <tr>
-            <th></th>
+            <th th:if="${session.user.userType == 2 || session.user.userType == 3}"></th>
             <th>Title</th>
             <th>Start date and time</th>
             <th>End date and time</th>
-            <th>Duration</th>
+            <th th:if="${session.user.userType == 2 || session.user.userType == 3}">Duration</th>
+            <th th:if="${session.user.userType == 1}">Status</th>
           </tr>
           </thead>
           <tbody>
-          <tr th:each="exam : ${exams}">
-            <td class="collapsing">
+          <tr th:each="exam : ${exams}" th:onclick="${session.user.userType == 1} ? 'showModalWithData(' + ${exam.id} + ')' : null">
+          <td class="collapsing" th:if="${session.user.userType == 2 || session.user.userType == 3}">
               <div class="ui fitted slider checkbox t-center">
                 <button class="button-check" th:onclick="navigate('exams/' + [[${exam.id}]])">
                   <i class="eye icon"></i>
@@ -49,14 +50,19 @@
             <td th:text="${exam.title}"></td>
             <td th:text="${exam.startDateTime}"></td>
             <td th:text="${exam.endDateTime}"></td>
-            <td th:text="${exam.duration}"></td>
+            <td th:text="${exam.duration}" th:if="${session.user.userType == 2 || session.user.userType == 3}"></td>
+            <div th:switch="${exam.status}" th:if="${session.user.userType == 1}">
+              <td th:case="0">Exam is not started</td>
+              <td th:case="1">Exam is started</td>
+              <td th:case="2">Exam is finished</td>
+            </div>
           </tr>
           </tbody>
-          <tfoot class="full-width">
+          <tfoot class="full-width" th:if="${session.user.userType == 2 || session.user.userType == 3}">
           <tr>
             <th></th>
             <th colspan="4">
-              <div class="ui teal right floated labeled icon button btn-ipt-add" onclick="navigate('exams/new')">
+              <div class="ui teal right floated labeled icon button btn-ipt-add" th:onclick="navigate('exams/new')">
                 <i class="clipboard icon"></i> Create new Exam
               </div>
             </th>
@@ -68,5 +74,90 @@
   </div>
 </div>
 <script th:replace="~{base :: base-script}"></script>
+<script>
+function showModalWithData(id) {
+  fetch('/api/v1/exams/' + id)
+    .then(response => response.json())
+    .then(data => {
+      // Formata a data e a hora
+      const startDateTime = formatDate(data.startDateTime);
+      const endDateTime = formatDate(data.endDateTime);
+
+      // Cria o conteúdo do modal
+      const content = `
+        <div class="modal">
+          <h2>Exam info</h2>
+          <br/>
+          <div class="ui form">
+            <div class="field">
+              <label for="title">Títle</label>
+              <input id="title" class="ui input" value="${data.title}" readonly>
+            </div>
+
+            <div class="field">
+              <label for="startDateTime">Start date</label>
+              <input id="startDateTime" class="ui input" value="${startDateTime}" readonly>
+            </div>
+
+            <div class="field">
+              <label for="endDateTime">End date</label>
+              <input id="endDateTime" class="ui input" value="${endDateTime}" readonly>
+            </div>
+
+            <div class="field">
+              <label for="duration">Duration in minutes</label>
+              <input id="duration" class="ui input" value="${data.duration}" readonly>
+              </div>
+          </div>
+        </div>
+      `;
+
+      // Exibe o modal do SweetAlert
+      swal({
+        content: {
+          element: 'div',
+          className: 'sweetalert-modal',
+          attributes: {
+            innerHTML: content,
+          },
+        },
+        buttons: {
+          startExam: {
+            text: 'Start exam',
+            value: data.id,
+          },
+        },
+      }).then(examId => {
+        if (examId) {
+          checkNavigate(examId);
+        }
+      });
+    })
+    .catch(error => {
+      console.error('Ocorreu um erro ao obter os dados do exame:', error);
+      swal('Erro', 'Ocorreu um erro ao obter os dados do exame.', 'error');
+    });
+}
+
+function formatDate(dateTimeString) {
+  const date = new Date(dateTimeString);
+  const day = date.getDate().toString().padStart(2, '0');
+  const month = (date.getMonth() + 1).toString().padStart(2, '0');
+  const year = date.getFullYear().toString();
+  const hours = date.getHours().toString().padStart(2, '0');
+  const minutes = date.getMinutes().toString().padStart(2, '0');
+  return `${day}/${month}/${year} ${hours}:${minutes}`;
+}
+
+function checkNavigate(status) {
+  if(status == 0) {
+    swal('Ops..', 'You can not access this page. The exam has not started yet.', 'warning')
+  } else if(status == 1) {
+    navigate('exams/' + status)
+  } else {
+    swal('Ops..', 'You can not access this page. The exam is over.', 'warning')
+  }
+}
+</script>
 </body>
 </html>

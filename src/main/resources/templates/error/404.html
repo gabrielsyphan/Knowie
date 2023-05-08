@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="~{base :: base-head('Home')}"></head>
+<body>
+<div class="image-background"></div>
+<div class="menu-container">
+    <div class="screen">
+        <div class="container-th">
+            <div class="ui">
+                <button class="button-menu" onclick="showNav()">
+                    <i class="align justify icon"></i>
+                </button>
+                <div class="welcome-card">
+                    <div class="w-100 t-center">
+                        <div class="t-center">
+                            <img class="vector-home" th:src="@{/img/empty.svg}">
+                        </div>
+                        <h2>Ops...!</h2>
+                        <p>The page you are looking for does not exist.</p>
+                        <button class="btn-new mt-3" onclick="navigate('')">Return to home</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script th:replace="~{base :: base-script}"></script>
+</body>
+</html>

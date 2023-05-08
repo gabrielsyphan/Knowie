@@ -36,4 +36,6 @@ public class ExamDto {
     @NotNull
     @NotEmpty
     private List<QuestionDto> questions;
+
+    private Integer status;
 }

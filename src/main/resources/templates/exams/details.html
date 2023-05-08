@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
 <head th:replace="~{base :: base-head('Create new exam')}"></head>
-<body>
+<body th:attr="data-user-type=${session.user.userType}, data-exam-id=${exam.id}, data-user-id=${session.user.id},
+ data-exam-duration=${exam.duration}">
 <div class="image-background"></div>
 <div class="menu-container">
   <div th:replace="~{nav :: menu}"></div>
@@ -11,9 +12,10 @@
         <button class="button-menu" onclick="showNav()">
           <i class="align justify icon"></i>
         </button>
-        <p class="breadcrumb">exams / details</p>
+        <p class="breadcrumb">exams / start</p>
         <div class="ui">
           <h2 th:text="${exam.title}"></h2>
+          <div id="countdown"></div>
           <div class="ui cards mt-3">
             <div class="ui card exam-question-card" th:each="question : ${exam.questions}">
               <h4 th:text="${question.name}"></h4>
@@ -50,5 +52,109 @@
   </div>
 </div>
 <script th:replace="~{base :: base-script}"></script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  // Get the value of the data-user-type attribute
+  var userType = document.body.getAttribute('data-user-type');
+
+  // Get the value of data-user-id attribute
+  var userId = document.body.getAttribute('data-user-id');
+
+  // Get the value of the data-exam-id attribute
+  var examId = document.body.getAttribute('data-exam-id');
+
+  // Get the value of data-started-exam attribute
+  var startedExam = document.body.getAttribute('data-started-exam');
+
+  // Get the value of data-exam-duration attribute
+  var examDuration = document.body.getAttribute('data-exam-duration');
+
+  // Check if the user has permission to start the exam
+  if (userType === '1') {
+    startExam(examId, userId, startedExam, examDuration);
+  }
+});
+
+function startExam(examId, userId, startedExam, examDuration) {
+  // Send a request to start the exam
+  fetch('/api/v1/exams/start/' + examId + '/'+ userId)
+  .then(function(response) {
+    // Check if the response was successful
+    if (!response.ok) {
+      throw new Error('Failed to start exam');
+      // Redirect to the exam page
+      window.location.href = '/exams/';
+    }
+
+    response.json().then(function(data) {
+      // Parse the date string from the response into a Date object
+      const startTime = new Date(data);
+
+      // Calculate the end time by adding the duration in minutes
+      const endTime = new Date(startTime.getTime() + examDuration * 60 * 1000);
+
+      setInterval(() => {
+        // Calculate the time remaining in milliseconds
+        const timeRemaining = endTime.getTime() - new Date().getTime();
+
+        // Check if the time remaining is negative
+        if (timeRemaining < 0) {
+          swal('Error', 'The time to complete the exam has expired. Please contact your teacher to reset the exam.', 'error').then((okay) => {
+            navigate('exams');
+          });
+        } else {
+          // Format the time remaining and display it on the page
+          const countdownElement = document.getElementById('countdown');
+          countdownElement.innerText = `Time remaining: ${formatTime(timeRemaining)}`;
+        }
+      }, 1000);
+    });
+  })
+  .catch(function(error) {
+    swal('Error', error.message, 'error');
+  });
+}
+
+function formatTime(milliseconds) {
+  const seconds = Math.floor(milliseconds / 1000);
+  const minutes = Math.floor(seconds / 60);
+  const hours = Math.floor(minutes / 60);
+
+  const remainingMinutes = minutes % 60;
+  const remainingSeconds = seconds % 60;
+
+  return `${hours}h ${remainingMinutes}m ${remainingSeconds}s`;
+}
+
+document.addEventListener('beforeunload', function (event) {
+  event.preventDefault();
+  event.returnValue = '';
+  alert('Hey, you are not allowed to leave the exam page. If you close the tab or browser, you will not be able to continue the exam.');
+});
+
+document.addEventListener('mouseleave', function(event) {
+  swal('Hey!', "You're not allowed to leave the exam page. If you close the tab or browser, you won't be able to continue the exam.", 'warning');
+});
+
+let isWindowFocused = true;
+
+window.addEventListener('focus', function() {
+  isWindowFocused = true;
+});
+
+window.addEventListener('blur', function(event) {
+  if (!isWindowFocused()) {
+    // aqui você pode chamar o SweetAlert ou outro alerta que desejar
+    alert('Hey, you are not allowed to leave the exam page. If you switch to another application, you will not be able to continue the exam.');
+  }
+});
+
+document.addEventListener('visibilitychange', function() {
+  if (document.visibilityState === 'hidden') {
+    swal('Hey!', "You're not allowed to leave the exam page. If you close the tab or browser, you won't be able to continue the exam.", 'warning');
+  }
+});
+
+</script>
 </body>
 </html>

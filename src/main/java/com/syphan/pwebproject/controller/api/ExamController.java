@@ -3,8 +3,11 @@ package com.syphan.pwebproject.controller.api;
 import com.syphan.pwebproject.constants.PathConstants;
 import com.syphan.pwebproject.model.dto.ExamDto;
 import com.syphan.pwebproject.model.dto.QuestionDto;
+import com.syphan.pwebproject.model.dto.UserDto;
+import com.syphan.pwebproject.model.entity.StartedExamEntity;
 import com.syphan.pwebproject.service.exam.ExamService;
 import com.syphan.pwebproject.service.question.QuestionService;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -15,6 +18,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import java.net.URI;
+import java.time.LocalDateTime;
 import java.util.List;
 
 @Controller
@@ -71,5 +75,19 @@ public class ExamController {
         log.info("ExamController - deleteExam: Delete exam with id: {}", id);
         this.examService.delete(id);
         return ResponseEntity.noContent().build();
+    }
+
+    @GetMapping(value = PathConstants.EXAMS + "/{id}", produces = "application/json")
+    public ResponseEntity<ExamDto> getExamByIdApi(@PathVariable("id") long id) {
+        log.info("ExamController - getExamByIdApi: Get exam with id: {}", id);
+        ExamDto examDto = this.examService.findById(id);
+        return ResponseEntity.ok(examDto);
+    }
+
+    @GetMapping(value = PathConstants.EXAMS + "/start/{examId}/{userId}", produces = "application/json")
+    public ResponseEntity<LocalDateTime> startExam(@PathVariable("examId") long examId, @PathVariable("userId") long userId) {
+        log.info("ExamController - startExam: Start exam with id: {}", examId);
+        StartedExamEntity startedExamEntity = this.examService.startExam(examId, userId);
+        return ResponseEntity.ok(startedExamEntity.getStartedAt());
     }
 }

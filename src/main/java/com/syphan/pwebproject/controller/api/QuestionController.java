@@ -5,6 +5,8 @@ import com.syphan.pwebproject.model.dto.QuestionDto;
 import com.syphan.pwebproject.service.question.QuestionService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -35,6 +37,7 @@ public class QuestionController {
     }
 
     @GetMapping("/questions/{id}")
+    @Cacheable("questions")
     public String getQuestionById(@PathVariable("id") long id, Model model) {
         log.info("QuestionController - getQuestionById: Get question with id: {}", id);
         QuestionDto questionDto = this.questionService.findById(id);
@@ -51,6 +54,7 @@ public class QuestionController {
     }
 
     @PutMapping(value = PathConstants.QUESTIONS, consumes = "application/json", produces = "application/json")
+    @CacheEvict(cacheNames = "questions", allEntries = true)
     public ResponseEntity<Object> saveQuestion(@RequestBody QuestionDto questionDto, UriComponentsBuilder uriComponentsBuilder) throws Exception {
         log.info("QuestionController - createQuestion: Create question");
         QuestionDto createdQuestion = this.questionService.create(questionDto);

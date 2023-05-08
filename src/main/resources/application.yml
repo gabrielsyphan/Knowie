@@ -1,6 +1,6 @@
 server:
   error:
-    include-stacktrace: on-param
+    include-stacktrace: never
   port: 8080
 
 spring:

@@ -434,6 +434,19 @@ textarea {
     width: 100% !important;
 }
 
+.exam-id {
+  font-weight: bold;
+}
+
+.exam-questions {
+  font-weight: bold;
+  margin-top: 20px;
+}
+
+.exam-question {
+  margin-bottom: 5px;
+}
+
 @media only screen and (min-width: 769px) {
     .nav {
         display: grid;
