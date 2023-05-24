@@ -1,7 +1,7 @@
 package com.syphan.pwebproject.model.mapper;
 
 import com.syphan.pwebproject.model.dto.QuestionDto;
-import com.syphan.pwebproject.model.entity.QuestionEntity;
+import com.syphan.pwebproject.model.entity.Question;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -12,11 +12,11 @@ public interface QuestionMapper {
 
     public static final QuestionMapper INSTANCE = Mappers.getMapper(QuestionMapper.class);
 
-    public abstract QuestionEntity dtoToEntity(QuestionDto questionDto);
+    public abstract Question dtoToEntity(QuestionDto questionDto);
 
-    public abstract QuestionDto entityToDto(QuestionEntity questionEntity);
+    public abstract QuestionDto entityToDto(Question questionEntity);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "createdAt", ignore = true)
-    public abstract QuestionEntity updateEntity(QuestionEntity questionEntityOrig, @MappingTarget QuestionEntity questionEntityDest);
+    public abstract Question updateEntity(Question questionEntityOrig, @MappingTarget Question questionEntityDest);
 }

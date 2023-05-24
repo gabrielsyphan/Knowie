@@ -14,7 +14,7 @@ import java.util.List;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class QuestionEntity {
+public class Question {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -33,7 +33,11 @@ public class QuestionEntity {
     private Integer answerType;
 
     @ElementCollection
-    private List<String> answerValues;
+    @Embedded
+    private List<Answer> answers;
+
+    @Column(columnDefinition = "TINYINT(1)")
+    private boolean trueOrFalse;
 
     @Column
     private LocalDateTime createdAt;
@@ -42,5 +46,5 @@ public class QuestionEntity {
     private LocalDateTime updatedAt;
 
     @ManyToOne
-    private UserEntity user;
+    private User user;
 }

@@ -13,7 +13,7 @@ import java.time.LocalDateTime;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class StartedExamEntity {
+public class StartedExam {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -21,11 +21,11 @@ public class StartedExamEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "exam_id", referencedColumnName = "id")
-    private ExamEntity exam;
+    private Exam exam;
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.REMOVE)
     @JoinColumn(name = "user_id", referencedColumnName = "id")
-    private UserEntity user;
+    private User user;
 
     @Column(name = "started_at")
     private LocalDateTime startedAt;

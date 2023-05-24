@@ -45,6 +45,7 @@
                 </div>
               </div>
             </div>
+            <button th:if="${session.user.userType == 1}" class="btn-new mt-3" onclick="navigate('exams')">Submit</button>
           </div>
         </div>
       </div>

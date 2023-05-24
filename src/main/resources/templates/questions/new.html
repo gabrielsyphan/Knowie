@@ -71,6 +71,7 @@
                     </div>
 
                     <div id="answerInputs"></div>
+                    <div id="correctAnswerInputs"></div>
 
                     <div class="mt-3">
                         <button class="ui button button-reset" type="button" onclick="navigate('questions')">Return</button>
@@ -88,8 +89,10 @@
             addTag(tag);
         });
 
-        const answerChoices = [[${question} != null ? ${question.answerValues} : '']];
-        addAnswerChoices(answerChoices);
+        const answerChoices = [[${question} != null ? ${question.answers} : '']];
+        const answerType = [[${question} != null ? ${question.answerType} : '']];
+        const trueOrFalse = [[${question} != null ? ${question.trueOrFalse} : false]];
+        addAnswerChoices(answerType, answerChoices, trueOrFalse);
 </script>
 </body>
 </html>

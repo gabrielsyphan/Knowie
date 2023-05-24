@@ -1,8 +1,8 @@
 package com.syphan.pwebproject.service.question;
 
 import com.syphan.pwebproject.model.dto.QuestionDto;
-import com.syphan.pwebproject.model.entity.QuestionEntity;
-import com.syphan.pwebproject.model.entity.UserEntity;
+import com.syphan.pwebproject.model.entity.Question;
+import com.syphan.pwebproject.model.entity.User;
 import com.syphan.pwebproject.model.mapper.QuestionMapper;
 import com.syphan.pwebproject.repository.QuestionRepository;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,20 +25,20 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     public QuestionDto create(QuestionDto obj) throws Exception {
         try {
-            QuestionEntity questionEntity = QuestionMapper.INSTANCE.dtoToEntity(obj);
+            Question questionEntity = QuestionMapper.INSTANCE.dtoToEntity(obj);
 
             if(questionEntity.getId() != null) {
-                QuestionEntity questionEntityFound = this.questionRepository.findById(questionEntity.getId()).orElseThrow(
+                Question questionEntityFound = this.questionRepository.findById(questionEntity.getId()).orElseThrow(
                         () -> new Exception("QuestionServiceImpl - create/update: Question not found")
                 );
-                QuestionEntity questionEntityUpdated = QuestionMapper.INSTANCE.updateEntity(questionEntity, questionEntityFound);
+                Question questionEntityUpdated = QuestionMapper.INSTANCE.updateEntity(questionEntity, questionEntityFound);
                 questionEntityUpdated.setUpdatedAt(LocalDateTime.now());
                 return QuestionMapper.INSTANCE.entityToDto(this.questionRepository.saveAndFlush(questionEntityUpdated));
             }
 
             questionEntity.setCreatedAt(LocalDateTime.now());
             questionEntity.setUpdatedAt(LocalDateTime.now());
-            QuestionEntity questionSaved = this.questionRepository.save(questionEntity);
+            Question questionSaved = this.questionRepository.save(questionEntity);
             return QuestionMapper.INSTANCE.entityToDto(questionSaved);
         } catch (Exception e) {
             e.printStackTrace();
@@ -49,7 +49,7 @@ public class QuestionServiceImpl implements QuestionService {
     @Override
     public void delete(long id) {
         try {
-            Optional<QuestionEntity> questionEntity = this.questionRepository.findById(id);
+            Optional<Question> questionEntity = this.questionRepository.findById(id);
             if(questionEntity.isPresent()) {
                 this.questionRepository.delete(questionEntity.get());
             } else {
@@ -63,7 +63,7 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public List<QuestionDto> findAll() {
-        List<QuestionEntity> questionEntities = this.questionRepository.findAll();
+        List<Question> questionEntities = this.questionRepository.findAll();
         return questionEntities.stream().map(this::formatQuestion).toList();
     }
 
@@ -74,10 +74,10 @@ public class QuestionServiceImpl implements QuestionService {
         );
     }
 
-    private QuestionDto formatQuestion(QuestionEntity questionDto) {
+    private QuestionDto formatQuestion(Question questionDto) {
         if (questionDto.getUser() == null) {
             questionDto.setUser(
-                    UserEntity.builder()
+                    User.builder()
                             .name("ADMIN")
                             .email("admin@knowie.com")
                             .userType(3L)

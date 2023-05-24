@@ -16,6 +16,11 @@
             <span>Home</span>
         </div>
 
+        <div class="menu-box" th:classappend="${route} == 'classrooms' ? 'active'" onclick="navigate('classrooms')">
+            <i class="graduation cap icon"></i>
+            <span>Classroom</span>
+        </div>
+
         <div class="menu-box" th:classappend="${route} == 'exams' ? 'active'" onclick="navigate('exams')">
             <i class="clipboard icon"></i>
             <span>Exams</span>
@@ -27,7 +32,7 @@
         </div>
 
         <div class="menu-box" th:classappend="${route} == 'answers' ? 'active'" onclick="notImplemented()">
-            <i class="book icon"></i>
+            <i class="pencil alternate icon"></i>
             <span>Answers</span>
         </div>
 

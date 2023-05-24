@@ -4,7 +4,7 @@ import com.syphan.pwebproject.constants.PathConstants;
 import com.syphan.pwebproject.model.dto.ExamDto;
 import com.syphan.pwebproject.model.dto.QuestionDto;
 import com.syphan.pwebproject.model.dto.UserDto;
-import com.syphan.pwebproject.model.entity.StartedExamEntity;
+import com.syphan.pwebproject.model.entity.StartedExam;
 import com.syphan.pwebproject.service.exam.ExamService;
 import com.syphan.pwebproject.service.question.QuestionService;
 import jakarta.servlet.http.HttpSession;
@@ -36,9 +36,10 @@ public class ExamController {
     }
 
     @GetMapping("/exams")
-    public String getAllExams(Model model) {
+    public String getAllExams(Model model, HttpSession httpSession) {
         log.info("ExamController - getAllExams: Get all exams");
-        List<ExamDto> exams = this.examService.findAll();
+        UserDto user = (UserDto) httpSession.getAttribute("user");
+        List<ExamDto> exams = this.examService.findAllByUser(user);
         model.addAttribute("route", "exams");
         model.addAttribute("exams", exams);
         return "exams/all";
@@ -63,8 +64,10 @@ public class ExamController {
     }
 
     @PutMapping(value = PathConstants.EXAMS, consumes = "application/json", produces = "application/json")
-    public ResponseEntity<Object> saveExam(@RequestBody @Valid ExamDto examDto, UriComponentsBuilder uriComponentsBuilder) throws Exception {
+    public ResponseEntity<Object> saveExam(@RequestBody @Valid ExamDto examDto, UriComponentsBuilder uriComponentsBuilder, HttpSession httpSession) throws Exception {
         log.info("ExamController - saveExam: Save exam");
+        UserDto user = (UserDto) httpSession.getAttribute("user");
+        examDto.setOwner(user);
         ExamDto createdEXAM = this.examService.create(examDto);
         URI uri = uriComponentsBuilder.path("exams/{id}").buildAndExpand(createdEXAM.getId()).toUri();
         return ResponseEntity.created(uri).body(createdEXAM);
@@ -87,7 +90,7 @@ public class ExamController {
     @GetMapping(value = PathConstants.EXAMS + "/start/{examId}/{userId}", produces = "application/json")
     public ResponseEntity<LocalDateTime> startExam(@PathVariable("examId") long examId, @PathVariable("userId") long userId) {
         log.info("ExamController - startExam: Start exam with id: {}", examId);
-        StartedExamEntity startedExamEntity = this.examService.startExam(examId, userId);
+        StartedExam startedExamEntity = this.examService.startExam(examId, userId);
         return ResponseEntity.ok(startedExamEntity.getStartedAt());
     }
 }

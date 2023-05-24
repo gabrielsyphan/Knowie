@@ -136,6 +136,14 @@ function submitForm(e, path) {
                     }).then((okay) => {
                         navigate(path);
                     });
+                } else if(path == "classrooms") {
+                    swal({
+                        title: "Success!",
+                        text: "Your registration has been recorded. The classroom code is:   "+ response.code,
+                        icon: "success"
+                    }).then((okay) => {
+                        navigate(path);
+                    });
                 } else {
                     swal({
                         title: "Success!",
@@ -162,12 +170,13 @@ function submitForm(e, path) {
 
     if (path == "questions") {
         data["tags"] = tags;
-        data["answerValues"] = [
-            answerValues.option1,
-            answerValues.option2,
-            answerValues.option3,
-            answerValues.option4
+        data["answers"] = [
+            {"answer": answerValues.option1, "correct": answerValues.option1isCorrect == true},
+            {"answer": answerValues.option2, "correct": answerValues.option2isCorrect == true},
+            {"answer": answerValues.option3, "correct": answerValues.option3isCorrect == true},
+            {"answer": answerValues.option4, "correct": answerValues.option4isCorrect == true}
         ];
+        data["trueOrFalse"] = answerValues.trueOrFalse != "false";
     }
 
    if (path == "exams") {
@@ -267,40 +276,190 @@ function addInputs(answerType) {
             <div class="field">
                 <label>Choose nº1</label>
                 <input type="text" name="answerChoice" onchange="answerValues.option1 = this.value" required>
+                 <div class="div-checkbox">
+                    <input type="checkbox" name="answerChoiceCheckbox" onchange="answerValues.option1isCorrect = this.checked">
+                    <label>Correct answer</label>
+                 </div>
             </div>
             <div class="field">
                 <label>Choose nº2</label>
                 <input type="text" name="answerChoice" onchange="answerValues.option2 = this.value" required>
+                 <div class="div-checkbox">
+                    <input type="checkbox" name="answerChoiceCheckbox" onchange="answerValues.option2isCorrect = this.checked">
+                    <label>Correct answer</label>
+                 </div>
             </div>
             <div class="field">
                 <label>Choose nº3</label>
                 <input type="text" name="answerChoice" onchange="answerValues.option3 = this.value">
+                 <div class="div-checkbox">
+                     <input type="checkbox" name="answerChoiceCheckbox" onchange="answerValues.option3isCorrect = this.checked">
+                     <label>Correct answer</label>
+                 </div>
             </div>
             <div class="field">
                 <label>Choose nº4</label>
                 <input type="text" name="answerChoice" onchange="answerValues.option4 = this.value">
+                 <div class="div-checkbox">
+                    <input type="checkbox" name="answerChoiceCheckbox" onchange="answerValues.option4isCorrect = this.checked">
+                    <label>Correct answer</label>
+                 </div>
+            </div>
+        `;
+      } else if(answerType == "4") {
+        inputContainer.innerHTML = `
+            <div class="field">
+                <label>Correct answer</label>
+                <select name="trueOrFalse" onchange="answerValues.trueOrFalse = this.value" required>
+                    <option value="true">True</option>
+                    <option value="false">False</option>
+                </select>
             </div>
         `;
       }
 }
 
-function addAnswerChoices(answers) {
+function addAnswerChoices(answerType, answers, trueOrFalse) {
     let inputContainer = document.getElementById("answerInputs");
     inputContainer.innerHTML = "";
 
-    if(answers.length > 0) {
-        answers.forEach(answer => {
-            answerCount++;
-            inputContainer.innerHTML += `
-                <div class="field">
-                    <label>Choose nº${answerCount}</label>
-                    <input type="text" name="answerChoice" onchange="answerValues.option${answerCount} = this.value" value="${answer}" required>
-                </div>
-            `;
+    if(answers.length > 0 && (answerType == "2" || answerType == "3")) {
+        answers.forEach(a => {
+            if(a.answer != null) {
+                answerCount++;
+                const isChecked = a.correct ? "checked" : "";
+                inputContainer.innerHTML += `
+                    <div class="field">
+                        <label>Choose nº${answerCount}</label>
+                        <input type="text" name="answerChoice" onchange="answerValues.option${answerCount} = this.value" value="${a.answer}" required>
+                         <div class="div-checkbox">
+                             <input type="checkbox" name="answerChoiceCheckbox" onchange="answerValues.option${answerCount}isCorrect = this.checked" ${isChecked}>
+                             <label>Correct answer</label>
+                         </div>
+                    </div>
+                `;
+            }
         });
+
+        if(answers[0].answer != null) {
+            answerValues.option1 = answers[0].answer;
+            answerValues.option1isCorrect = answers[0].correct;
+       }
+
+        if(answers[1].answer != null) {
+            answerValues.option2 = answers[1].answer;
+            answerValues.option2isCorrect = answers[1].correct;
+        }
+
+        if(answers[2].answer != null) {
+            answerValues.option3 = answers[2].answer;
+            answerValues.option3isCorrect = answers[2].correct;
+        }
+
+        if(answers[3].answer != null) {
+            answerValues.option4 = answers[3].answer;
+            answerValues.option4isCorrect = answers[3].correct;
+        }
+    } else if(answerType == "4") {
+        inputContainer.innerHTML = `
+            <div class="field">
+                <label>Correct answer</label>
+                <select name="trueOrFalse" onchange="answerValues.trueOrFalse = this.value" required>
+                    <option value="true" ${trueOrFalse == true ? "selected" : ""}>True</option>
+                    <option value="false" ${trueOrFalse == false ? "selected" : ""}>False</option>
+                </select>
+            </div>
+        `;
+
+        answerValues.trueOrFalse = trueOrFalse;
     }
 }
 
 document.getElementById("answerType").addEventListener("change", function() {
     addInputs(this.value);
 });
+
+function linkExam(classroomId) {
+    swal({
+         text: "Please enter the exam code:",
+         content: "input",
+         button: {
+           text: "Link exam",
+           closeModal: false,
+         },
+       }).then(examCode => {
+          const xhr = new XMLHttpRequest();
+          xhr.onreadystatechange = function() {
+             if (xhr.readyState === 4) {
+                if (xhr.status >= 200 && xhr.status <= 300) {
+                    swal({
+                        title: "Success!",
+                        text: "Your registration has been recorded.",
+                        icon: "success"
+                    }).then((okay) => {
+                        navigate("classrooms/" + classroomId);
+                    });
+                } else {
+                   swal({
+                        title: "Error!",
+                        text: "It was not possible to complete your registration.",
+                        icon: "error"
+                    }).then((okay) => {
+                        navigate("classrooms/" + classroomId);
+                    });
+                }
+              }
+            };
+
+          const data = {
+            classroomId: classroomId,
+            examCode: examCode
+          };
+
+          xhr.open("POST", "/api/v1/classrooms/link-exam-classroom", true);
+          xhr.setRequestHeader("Content-Type", "application/json");
+          xhr.send(JSON.stringify(data));
+       });
+}
+
+function joinClassroom() {
+    swal({
+         text: "Please enter the classroom code:",
+         content: "input",
+         button: {
+           text: "Join",
+           closeModal: false,
+         },
+       }).then(classroomCode => {
+          const xhr = new XMLHttpRequest();
+          xhr.onreadystatechange = function() {
+             if (xhr.readyState === 4) {
+                if (xhr.status >= 200 && xhr.status <= 300) {
+                    swal({
+                        title: "Success!",
+                        text: "Your registration has been recorded.",
+                        icon: "success"
+                    }).then((okay) => {
+                        navigate("classrooms");
+                    });
+                } else {
+                   swal({
+                        title: "Error!",
+                        text: "The classroom code is invalid.",
+                        icon: "error"
+                    }).then((okay) => {
+                        navigate("classrooms");
+                    });
+                }
+              }
+            };
+
+          const data = {
+            code: classroomCode
+          };
+
+          xhr.open("POST", "/api/v1/classrooms/join", true);
+          xhr.setRequestHeader("Content-Type", "application/json");
+          xhr.send(JSON.stringify(data));
+       });
+}

@@ -2,19 +2,19 @@ package com.syphan.pwebproject.service.exam;
 
 import com.syphan.pwebproject.model.dto.ExamDto;
 import com.syphan.pwebproject.model.dto.UserDto;
-import com.syphan.pwebproject.model.entity.ExamEntity;
-import com.syphan.pwebproject.model.entity.QuestionEntity;
-import com.syphan.pwebproject.model.entity.StartedExamEntity;
-import com.syphan.pwebproject.model.entity.UserEntity;
+import com.syphan.pwebproject.model.entity.*;
 import com.syphan.pwebproject.model.mapper.ExamMapper;
 import com.syphan.pwebproject.model.mapper.UserMapper;
+import com.syphan.pwebproject.repository.ClassroomRepository;
 import com.syphan.pwebproject.repository.ExamRepository;
 import com.syphan.pwebproject.repository.QuestionRepository;
 import com.syphan.pwebproject.repository.StartedExamRepository;
+import com.syphan.pwebproject.util.StringGenerator;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -27,39 +27,42 @@ public class ExamServiceImpl implements ExamService {
 
     private final StartedExamRepository startedExamRepository;
 
+    private final ClassroomRepository classroomRepository;
+
     @Autowired
-    public ExamServiceImpl(ExamRepository examRepository, QuestionRepository questionRepository, StartedExamRepository startedExamRepository) {
+    public ExamServiceImpl(ExamRepository examRepository, QuestionRepository questionRepository, StartedExamRepository startedExamRepository, ClassroomRepository classroomRepository) {
         this.examRepository = examRepository;
         this.questionRepository = questionRepository;
         this.startedExamRepository = startedExamRepository;
+        this.classroomRepository = classroomRepository;
     }
 
     @Override
     public ExamDto create(ExamDto obj) throws Exception {
         try {
-            ExamEntity examEntity = ExamMapper.INSTANCE.dtoToEntity(obj);
+            Exam examEntity = ExamMapper.INSTANCE.dtoToEntity(obj);
 
             if(obj.getQuestions().size() == 0) {
                 throw new Exception("ExamServiceImpl - create: Exam must have at least 1 question");
             }
 
-            List<QuestionEntity> questionEntities = obj.getQuestions().stream().map(questionDto -> {
-                return this.questionRepository.findById(questionDto.getId()).orElseThrow(
+            List<Question> questionEntities = obj.getQuestions().stream().map(questionDto ->
+                    this.questionRepository.findById(questionDto.getId()).orElseThrow(
                         () -> new RuntimeException("ExamServiceImpl - create: Question not found")
-                );
-            }).toList();
+            )).toList();
 
             examEntity.setQuestions(questionEntities);
+            examEntity.setCode("EXAM-" + StringGenerator.generateCode(6));
 
             if(examEntity.getId() != null) {
-                ExamEntity examEntityFound = this.examRepository.findById(examEntity.getId()).orElseThrow(
+                Exam examEntityFound = this.examRepository.findById(examEntity.getId()).orElseThrow(
                         () -> new Exception("ExamServiceImpl - create/update: Exam not found")
                 );
-                ExamEntity examEntityUpdated = ExamMapper.INSTANCE.updateEntity(examEntity, examEntityFound);
+                Exam examEntityUpdated = ExamMapper.INSTANCE.updateEntity(examEntity, examEntityFound);
                 return ExamMapper.INSTANCE.entityToDto(this.examRepository.saveAndFlush(examEntityUpdated));
             }
 
-            ExamEntity examSaved = this.examRepository.save(examEntity);
+            Exam examSaved = this.examRepository.save(examEntity);
             return ExamMapper.INSTANCE.entityToDto(examSaved);
         } catch (Exception e) {
             e.printStackTrace();
@@ -70,7 +73,7 @@ public class ExamServiceImpl implements ExamService {
     @Override
     public void delete(long id) {
         try {
-            Optional<ExamEntity> examEntity = this.examRepository.findById(id);
+            Optional<Exam> examEntity = this.examRepository.findById(id);
             if(examEntity.isPresent()) {
                 this.examRepository.delete(examEntity.get());
             } else {
@@ -84,15 +87,14 @@ public class ExamServiceImpl implements ExamService {
 
     @Override
     public List<ExamDto> findAll() {
-        List<ExamEntity> examEntities = this.examRepository.findAll();
+        List<Exam> examEntities = this.examRepository.findAll();
         List<ExamDto> examsDto = examEntities.stream().map(ExamMapper.INSTANCE::entityToDto).toList();
-        examsDto.forEach(examDto -> {
-            this.updateExamStatus(examDto);
-        });
+        examsDto.forEach(this::updateExamStatus);
         return examsDto;
     }
 
-    private void updateExamStatus(ExamDto examDto) {
+    @Override
+    public void updateExamStatus(ExamDto examDto) {
         LocalDateTime currentDateTime = LocalDateTime.now();
         if(examDto.getEndDateTime().isBefore(currentDateTime)) {
             // Exam is finished
@@ -117,13 +119,13 @@ public class ExamServiceImpl implements ExamService {
     }
 
     @Override
-    public StartedExamEntity startExam(long examId, long userId) {
-        UserEntity userEntity = UserMapper.INSTANCE.dtoToEntity(UserDto.builder().id(userId).build());
-        ExamEntity examEntity = ExamEntity.builder().id(examId).build();
+    public StartedExam startExam(long examId, long userId) {
+        User userEntity = UserMapper.INSTANCE.dtoToEntity(UserDto.builder().id(userId).build());
+        Exam examEntity = Exam.builder().id(examId).build();
 
-        Optional<StartedExamEntity> startedExamEntityFound = this.startedExamRepository.findByExamAndUser(examEntity, userEntity);
+        Optional<StartedExam> startedExamEntityFound = this.startedExamRepository.findByExamAndUser(examEntity, userEntity);
         if(startedExamEntityFound.isEmpty()) {
-            StartedExamEntity startedExamEntity = StartedExamEntity.builder()
+            StartedExam startedExamEntity = StartedExam.builder()
                     .exam(examEntity)
                     .user(userEntity)
                     .startedAt(LocalDateTime.now())
@@ -133,5 +135,28 @@ public class ExamServiceImpl implements ExamService {
         }
 
         return startedExamEntityFound.get();
+    }
+
+    @Override
+    public List<ExamDto> findAllByUser(UserDto user) {
+        if(user.getUserType() != 1) {
+            return this.examRepository.findAllByOwner(
+                    UserMapper.INSTANCE.dtoToEntity(user)
+            ).stream().map(ExamMapper.INSTANCE::entityToDto).toList();
+        }
+
+        List<Classroom> classrooms = this.classroomRepository.findAllByUsers(
+                UserMapper.INSTANCE.dtoToEntity(user)
+        );
+
+        List<Exam> examEntities = new ArrayList<>();
+        classrooms.forEach(classroom -> {
+            examEntities.addAll(classroom.getExams());
+        });
+
+        List<ExamDto> exams = examEntities.stream().map(ExamMapper.INSTANCE::entityToDto).toList();
+        exams.forEach(this::updateExamStatus);
+
+        return exams;
     }
 }

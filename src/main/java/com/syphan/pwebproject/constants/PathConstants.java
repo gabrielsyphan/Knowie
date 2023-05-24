@@ -16,6 +16,10 @@ public class PathConstants {
 
     public static final String LOGIN = BASE_PATH + "/login";
 
+    public static final String CLASSROOM = BASE_PATH + "/classrooms";
+
+    public static final String JOIN_CLASSROOM = CLASSROOM + "/join";
+
     public static final String RESET_PASSWORD = BASE_PATH + "/reset-password";
 
     public static final String FORGOT_PASSWORD = BASE_PATH + "/forgot-password";

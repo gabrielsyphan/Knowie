@@ -14,15 +14,15 @@
                 </button>
                 <h2>List of all questions</h2>
                 <hr/>
-                <button class="btn-new mt-3 button-submit" onclick="navigate('questions/new')">Create a new question
-                </button>
+                <button th:if="${questions.size() > 0}" class="btn-new mt-3 button-submit" onclick="navigate('questions/new')">Create a new question</button>
                 <div class="welcome-card" th:if="${questions.size() == 0}" >
                     <div class="w-100 t-center mtn-300">
                         <div class="t-center">
                             <img class="vector-home" th:src="@{/img/empty.svg}">
                         </div>
                         <h2>Nothing to see here :(</h2>
-                        <p>There are no exams registered in the system.</p>
+                        <p>There are no questions registered in the system.</p>
+                        <button class="btn-new mt-3 button-submit" onclick="navigate('questions/new')">Create a new question</button>
                     </div>
                 </div>
                 <div class="d-flex ui cards mt-3">

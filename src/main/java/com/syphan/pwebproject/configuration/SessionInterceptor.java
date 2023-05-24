@@ -30,7 +30,10 @@ public class SessionInterceptor implements HandlerInterceptor {
             return false;
         }
 
-        if(user.getUserType() == 1 && (request.getRequestURI().matches("^/questions.*$") || request.getRequestURI().equals("/exams/new"))) {
+        if(user.getUserType() == 1 &&
+                (request.getRequestURI().matches("^/questions.*$") ||
+                request.getRequestURI().equals("/exams/new") ||
+                request.getRequestURI().matches("^/classrooms/.*$"))) {
             response.sendRedirect("/");
             return false;
         }

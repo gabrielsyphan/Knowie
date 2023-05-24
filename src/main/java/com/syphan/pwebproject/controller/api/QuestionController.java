@@ -55,7 +55,7 @@ public class QuestionController {
 
     @PutMapping(value = PathConstants.QUESTIONS, consumes = "application/json", produces = "application/json")
     @CacheEvict(cacheNames = "questions", allEntries = true)
-    public ResponseEntity<Object> saveQuestion(@RequestBody QuestionDto questionDto, UriComponentsBuilder uriComponentsBuilder) throws Exception {
+    public ResponseEntity<Object> createQuestion(@RequestBody QuestionDto questionDto, UriComponentsBuilder uriComponentsBuilder) throws Exception {
         log.info("QuestionController - createQuestion: Create question");
         QuestionDto createdQuestion = this.questionService.create(questionDto);
         URI uri = uriComponentsBuilder.path("questions/{id}").buildAndExpand(createdQuestion.getId()).toUri();

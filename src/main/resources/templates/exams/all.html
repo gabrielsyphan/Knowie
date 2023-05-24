@@ -30,12 +30,14 @@
             <th>Title</th>
             <th>Start date and time</th>
             <th>End date and time</th>
+            <th th:if="${session.user.userType == 2 || session.user.userType == 3}">Code</th>
             <th th:if="${session.user.userType == 2 || session.user.userType == 3}">Duration</th>
             <th th:if="${session.user.userType == 1}">Status</th>
+            <th th:if="${session.user.userType == 1}">Action</th>
           </tr>
           </thead>
           <tbody>
-          <tr th:each="exam : ${exams}" th:onclick="${session.user.userType == 1} ? 'showModalWithData(' + ${exam.id} + ')' : null">
+          <tr th:each="exam : ${exams}">
           <td class="collapsing" th:if="${session.user.userType == 2 || session.user.userType == 3}">
               <div class="ui fitted slider checkbox t-center">
                 <button class="button-check" th:onclick="navigate('exams/' + [[${exam.id}]])">
@@ -50,18 +52,24 @@
             <td th:text="${exam.title}"></td>
             <td th:text="${exam.startDateTime}"></td>
             <td th:text="${exam.endDateTime}"></td>
+            <td th:text="${exam.code}" th:if="${session.user.userType == 2 || session.user.userType == 3}"></td>
             <td th:text="${exam.duration}" th:if="${session.user.userType == 2 || session.user.userType == 3}"></td>
             <div th:switch="${exam.status}" th:if="${session.user.userType == 1}">
-              <td th:case="0">Exam is not started</td>
-              <td th:case="1">Exam is started</td>
-              <td th:case="2">Exam is finished</td>
+              <td th:case="0">Not started</td>
+              <td th:case="1">Started</td>
+              <td th:case="2">Finished</td>
             </div>
+            <td th:if="${session.user.userType == 1}" class="td-action">
+              <button class="ui teal floated icon button btn-ipt-add" th:onclick="showModalWithData([[${exam.id}]])">
+                Details
+              </button>
+            </td>
           </tr>
           </tbody>
           <tfoot class="full-width" th:if="${session.user.userType == 2 || session.user.userType == 3}">
           <tr>
             <th></th>
-            <th colspan="4">
+            <th colspan="6">
               <div class="ui teal right floated labeled icon button btn-ipt-add" th:onclick="navigate('exams/new')">
                 <i class="clipboard icon"></i> Create new Exam
               </div>
@@ -124,12 +132,12 @@ function showModalWithData(id) {
         buttons: {
           startExam: {
             text: 'Start exam',
-            value: data.id,
+            value: data,
           },
         },
-      }).then(examId => {
-        if (examId) {
-          checkNavigate(examId);
+      }).then(examStatus => {
+        if (examStatus) {
+          checkNavigate(examStatus);
         }
       });
     })
@@ -149,11 +157,11 @@ function formatDate(dateTimeString) {
   return `${day}/${month}/${year} ${hours}:${minutes}`;
 }
 
-function checkNavigate(status) {
-  if(status == 0) {
+function checkNavigate(data) {
+  if(data.status == 0) {
     swal('Ops..', 'You can not access this page. The exam has not started yet.', 'warning')
-  } else if(status == 1) {
-    navigate('exams/' + status)
+  } else if(data.status == 1) {
+    navigate('exams/' + data.id)
   } else {
     swal('Ops..', 'You can not access this page. The exam is over.', 'warning')
   }

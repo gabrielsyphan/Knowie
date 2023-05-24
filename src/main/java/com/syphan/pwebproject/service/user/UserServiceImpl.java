@@ -1,17 +1,15 @@
 package com.syphan.pwebproject.service.user;
 
 import com.syphan.pwebproject.model.dto.UserDto;
-import com.syphan.pwebproject.model.entity.UserEntity;
+import com.syphan.pwebproject.model.entity.User;
 import com.syphan.pwebproject.model.mapper.UserMapper;
 import com.syphan.pwebproject.repository.UserRepository;
 import com.syphan.pwebproject.util.BCryptEncoder;
+import com.syphan.pwebproject.util.StringGenerator;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.security.SecureRandom;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -21,8 +19,6 @@ public class UserServiceImpl implements UserService {
 
     private final UserRepository userRepository;
 
-    private static final String ALLOWED_CHARACTERS = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890!@#$%^&*()_+";
-
     @Autowired
     public UserServiceImpl(UserRepository userRepository) {
         this.userRepository = userRepository;
@@ -31,13 +27,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public UserDto create(UserDto obj) throws Exception {
         try {
-            UserEntity userEntity = UserMapper.INSTANCE.dtoToEntity(obj);
+            User userEntity = UserMapper.INSTANCE.dtoToEntity(obj);
 
             if(userEntity.getId() != null) {
-                UserEntity userEntityFound = this.userRepository.findById(userEntity.getId()).orElseThrow(
+                User userEntityFound = this.userRepository.findById(userEntity.getId()).orElseThrow(
                         () -> new Exception("UserServiceImpl - create/update: User not found")
                 );
-                UserEntity userEntityUpdated = UserMapper.INSTANCE.updateEntity(userEntity, userEntityFound);
+                User userEntityUpdated = UserMapper.INSTANCE.updateEntity(userEntity, userEntityFound);
                 return UserMapper.INSTANCE.entityToDto(this.userRepository.saveAndFlush(userEntityUpdated));
             }
 
@@ -45,11 +41,11 @@ public class UserServiceImpl implements UserService {
                 throw new Exception("UserServiceImpl - create: Password must be null");
             }
 
-            String password = this.generatePassword();
+            String password = StringGenerator.generateCode(8);
             userEntity.setPassword(BCryptEncoder.encode(password));
             userEntity.setFirstAccess(true);
 
-            UserEntity userSaved = this.userRepository.save(userEntity);
+            User userSaved = this.userRepository.save(userEntity);
             UserDto userDto = UserMapper.INSTANCE.entityToDto(userSaved);
             userDto.setPassword(password);
 
@@ -63,7 +59,7 @@ public class UserServiceImpl implements UserService {
     @Override
     public void delete(long id) {
         try {
-            Optional<UserEntity> userEntity = this.userRepository.findById(id);
+            Optional<User> userEntity = this.userRepository.findById(id);
             if(userEntity.isPresent()) {
                 this.userRepository.delete(userEntity.get());
             } else {
@@ -77,7 +73,7 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public List<UserDto> findAll() {
-        List<UserEntity> userEntities = this.userRepository.findAll();
+        List<User> userEntities = this.userRepository.findAll();
         return userEntities.stream().map(UserMapper.INSTANCE::entityToDto).toList();
     }
 
@@ -100,7 +96,7 @@ public class UserServiceImpl implements UserService {
         UserDto user = this.findByEmailAndPassword(userDto.getEmail(), userDto.getPassword());
 
         if(userDto.getEmail().equals("admin") && userDto.getPassword().equals("admin")) {
-            user = UserDto.builder().email("admin@knowie.site").name("ADMIN").userType(3L).build();
+            user = UserDto.builder().id(0L).email("admin@knowie.site").name("ADMIN").userType(3L).build();
         }
 
         if (user != null) {
@@ -118,7 +114,7 @@ public class UserServiceImpl implements UserService {
             throw new RuntimeException("UserServiceImpl - resetPassword: User not authorized");
         }
 
-        UserEntity userEntity = this.userRepository.findById(userDto.getId()).orElseThrow(
+        User userEntity = this.userRepository.findById(userDto.getId()).orElseThrow(
                 () -> new RuntimeException("UserServiceImpl - resetPassword: User not found")
         );
         userEntity.setPassword(BCryptEncoder.encode(userDto.getPassword()));
@@ -128,24 +124,15 @@ public class UserServiceImpl implements UserService {
 
     @Override
     public UserDto forgotPassword(UserDto userDto) throws RuntimeException {
-        UserEntity userEntity = this.userRepository.findByEmail(userDto.getEmail()).orElseThrow(
+        User userEntity = this.userRepository.findByEmail(userDto.getEmail()).orElseThrow(
                 () -> new RuntimeException("UserServiceImpl - forgotPassword: User not found")
         );
 
-        String password = this.generatePassword();
+        String password = StringGenerator.generateCode(8);
         userEntity.setPassword(BCryptEncoder.encode(password));
         userEntity.setFirstAccess(true);
-        UserEntity user = this.userRepository.save(userEntity);
+        User user = this.userRepository.save(userEntity);
 
         return UserDto.builder().password(password).build();
-    }
-
-    public String generatePassword() {
-        SecureRandom random = new SecureRandom();
-        StringBuilder password = new StringBuilder();
-        for (int i = 0; i < 8; i++) {
-            password.append(ALLOWED_CHARACTERS.charAt(random.nextInt(ALLOWED_CHARACTERS.length())));
-        }
-        return password.toString();
     }
 }

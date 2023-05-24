@@ -1,5 +1,6 @@
 package com.syphan.pwebproject.model.dto;
 
+import com.syphan.pwebproject.model.entity.Answer;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotEmpty;
@@ -37,7 +38,9 @@ public class QuestionDto {
     @Positive
     private Integer answerType;
 
-    private List<String> answerValues;
+    private List<Answer> answers;
+
+    private boolean trueOrFalse;
 
     private LocalDateTime createdAt;
 

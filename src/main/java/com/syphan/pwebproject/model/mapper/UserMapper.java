@@ -1,7 +1,7 @@
 package com.syphan.pwebproject.model.mapper;
 
 import com.syphan.pwebproject.model.dto.UserDto;
-import com.syphan.pwebproject.model.entity.UserEntity;
+import com.syphan.pwebproject.model.entity.User;
 import org.mapstruct.Mapper;
 import org.mapstruct.Mapping;
 import org.mapstruct.MappingTarget;
@@ -12,13 +12,13 @@ public interface UserMapper {
 
     public static final UserMapper INSTANCE = Mappers.getMapper(UserMapper.class);
 
-    public abstract UserEntity dtoToEntity(UserDto userDto);
+    public abstract User dtoToEntity(UserDto userDto);
 
     @Mapping(target = "password", ignore = true)
-    public abstract UserDto entityToDto(UserEntity user);
+    public abstract UserDto entityToDto(User user);
 
     @Mapping(target = "id", ignore = true)
     @Mapping(target = "password", ignore = true)
     @Mapping(target = "firstAccess", ignore = true)
-    public abstract UserEntity updateEntity(UserEntity userEntityOrig, @MappingTarget UserEntity userEntityDest);
+    public abstract User updateEntity(User userEntityOrig, @MappingTarget User userEntityDest);
 }

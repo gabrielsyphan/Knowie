@@ -447,6 +447,14 @@ textarea {
   margin-bottom: 5px;
 }
 
+.div-checkbox {
+    margin: 10px 0;
+}
+
+.div-checkbox > input {
+    margin: 4px 5px 0 4px;
+}
+
 @media only screen and (min-width: 769px) {
     .nav {
         display: grid;
@@ -493,4 +501,14 @@ textarea {
   .justify.icon {
       margin: 0 auto !important;
   }
+}
+
+.td-action {
+    width: 100px !important;
+}
+
+.exams-students {
+    background: #ebebeb;
+    padding: 20px;
+    border-radius: 6px;
 }

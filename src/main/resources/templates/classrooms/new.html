@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.w3.org/1999/xhtml">
+<head th:replace="~{base :: base-head('Create new classroom')}"></head>
+<body>
+<div class="image-background"></div>
+<div class="menu-container">
+    <div th:replace="~{nav :: menu}"></div>
+    <div class="screen">
+        <div class="container-th">
+            <div class="ui">
+                <button class="button-menu" onclick="showNav()">
+                    <i class="align justify icon"></i>
+                </button>
+                <p class="breadcrumb" th:if="${classroom == null}" >classrooms / new</p>
+                <p class="breadcrumb" th:if="${classroom != null}" >classrooms / <i th:text="${classroom.name}"></i></p>
+                <form class="ui form" method="post" onsubmit="submitForm(event, 'classrooms')">
+                    <h2 th:if="${classroom == null}">Create new classroom</h2>
+                    <div th:if="${classroom != null}">
+                        <h2 th:text="${classroom.name}"></h2>
+                        <p th:text="${classroom.description}"></p>
+                    </div>
+                    <hr/>
+
+                    <div class="field">
+                        <label>Name</label>
+                        <input class="ui input" name="name" th:attr="value=${classroom != null ? classroom.name : ''}" type="text"
+                               placeholder="Algorithms" required>
+                    </div>
+
+                    <div class="field">
+                        <label>Description</label>
+                        <input class="ui input" th:attr="value=${classroom != null ? classroom.description : ''}" name="description"
+                               type="text" placeholder="Algorithms class 2023.2" required>
+                    </div>
+
+                    <button class="ui button button-reset" type="button" onclick="navigate('classrooms')">Return</button>
+                    <button class="ui button button-submit" type="submit">Submit</button>
+                </form>
+
+                <br/>
+
+                <div class="exams-students" th:if="${classroom != null}">
+                    <h3>Current exams:</h3>
+                    <table class="ui compact celled definition table">
+                        <thead class="full-width">
+                        <tr>
+                            <th>Title</th>
+                            <th>Start date and time</th>
+                            <th>End date and time</th>
+                            <th>Duration</th>
+                            <th>Status</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="exam : ${classroom.exams}" >
+                            <td th:text="${exam.title}"></td>
+                            <td th:text="${exam.startDateTime}"></td>
+                            <td th:text="${exam.endDateTime}"></td>
+                            <td th:text="${exam.duration}"></td>
+                            <div th:switch="${exam.status}">
+                                <td th:case="0">Not started</td>
+                                <td th:case="1">Started</td>
+                                <td th:case="2">Finished</td>
+                            </div>
+                        </tr>
+                        </tbody>
+                        <tfoot class="full-width" th:if="${session.user.userType == 2 || session.user.userType == 3}">
+                        <tr>
+                            <th></th>
+                            <th colspan="5">
+                                <div class="ui teal right floated labeled icon button btn-ipt-add" th:onclick="linkExam([[${classroom.id}]])">
+                                    <i class="clipboard icon"></i> Add exam
+                                </div>
+                            </th>
+                        </tr>
+                        </tfoot>
+                    </table>
+
+                    <h3>Students</h3>
+                    <table class="ui compact celled definition table">
+                        <thead class="full-width">
+                        <tr>
+                            <th>Name</th>
+                            <th>Email</th>
+                            <th>Phone</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        <tr th:each="studant : ${classroom.users}">
+                            <td th:text="${studant.name}"></td>
+                            <td th:text="${studant.email}"></td>
+                            <td th:text="${studant.phone}"></td>
+                        </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<script th:replace="~{base :: base-script}"></script>
+</body>
+</html>
